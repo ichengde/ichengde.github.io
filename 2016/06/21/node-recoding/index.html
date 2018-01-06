@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>node-recoding | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="node 异步特点 异步编程函数式编程高阶编程高阶函数可以将函数作为输入或返回值.结合node中基本事件模块可以看出,事件的处理方式由高阶函数特性来完成的.如在ECMAscript5中的数组方法 forEach map reduceRight filter every some在自定义事件中,为相同事件注册不同回调,可以灵活处理业务逻辑. 偏函数用法创建一个调用另一个部分 参数或变量已经预置的函数">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node-recoding">
+<meta property="og:url" content="http://chegde.github.io/2016/06/21/node-recoding/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="node 异步特点 异步编程函数式编程高阶编程高阶函数可以将函数作为输入或返回值.结合node中基本事件模块可以看出,事件的处理方式由高阶函数特性来完成的.如在ECMAscript5中的数组方法 forEach map reduceRight filter every some在自定义事件中,为相同事件注册不同回调,可以灵活处理业务逻辑. 偏函数用法创建一个调用另一个部分 参数或变量已经预置的函数">
+<meta property="og:updated_time" content="2018-01-05T14:27:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="node-recoding">
+<meta name="twitter:description" content="node 异步特点 异步编程函数式编程高阶编程高阶函数可以将函数作为输入或返回值.结合node中基本事件模块可以看出,事件的处理方式由高阶函数特性来完成的.如在ECMAscript5中的数组方法 forEach map reduceRight filter every some在自定义事件中,为相同事件注册不同回调,可以灵活处理业务逻辑. 偏函数用法创建一个调用另一个部分 参数或变量已经预置的函数">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-node-recoding" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      node-recoding
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2016/06/21/node-recoding/" class="article-date">
+  <time datetime="2016-06-21T15:34:12.000Z" itemprop="datePublished">2016-06-21</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>node 异步特点</p>
+<h2 id="异步编程"><a href="#异步编程" class="headerlink" title="异步编程"></a>异步编程</h2><h4 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h4><h5 id="高阶编程"><a href="#高阶编程" class="headerlink" title="高阶编程"></a>高阶编程</h5><p>高阶函数可以将函数作为输入或返回值.<br>结合node中基本事件模块可以看出,事件的处理方式由高阶函数特性来完成的.<br>如在ECMAscript5中的数组方法 forEach map reduceRight filter every some<br>在自定义事件中,为相同事件注册不同回调,可以灵活处理业务逻辑.</p>
+<h5 id="偏函数用法"><a href="#偏函数用法" class="headerlink" title="偏函数用法"></a>偏函数用法</h5><p>创建一个调用另一个部分 参数或变量已经预置的函数 的函数的用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var isType = function(type) &#123;</span><br><span class="line">    return function(obj) &#123;</span><br><span class="line">        return toString.call(obj) == &apos;[object &apos; + type + &apos;]&apos;;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">var isString = isType(&apos;String&apos;);</span><br><span class="line">var isFunction = isType(&apos;Function&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>通过指定部分参数来产生一个新的定制参数的形式是偏函数</p>
+<h4 id="异步-Promise"><a href="#异步-Promise" class="headerlink" title="异步 Promise"></a><a href="http://www.jdon.com/idea/nodejs/promise.html" target="_blank" rel="noopener">异步 Promise</a></h4><p><a href="http://www.jdon.com/idea/nodejs/promise.html" target="_blank" rel="noopener">用法</a></p>
+<h4 id="异步-EventEmitter"><a href="#异步-EventEmitter" class="headerlink" title="异步 EventEmitter"></a><a href="http://cnodejs.org/topic/533d6edbc2621e680800e0ea" target="_blank" rel="noopener">异步 EventEmitter</a></h4><h3 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h3><p>如何进行同步</p>
+<ol>
+<li>使用回调 callback</li>
+<li>组成函数数组 递归调用</li>
+<li>调用类库<ol>
+<li><a href="https://github.com/caolan/async" target="_blank" rel="noopener">async</a></li>
+<li><a href="https://github.com/creationix/step" target="_blank" rel="noopener">step</a></li>
+</ol>
+</li>
+</ol>
+<h4 id="协程-generators"><a href="#协程-generators" class="headerlink" title="协程 generators"></a><a href="http://www.jdon.com/idea/nodejs/generators.html" target="_blank" rel="noopener">协程 generators</a></h4><ol>
+<li><a href="http://www.jdon.com/idea/nodejs/generators-vs-fibers.html" target="_blank" rel="noopener">示例 generators vs fibers</a></li>
+<li><a href="http://www.jdon.com/idea/nodejs/generators.html" target="_blank" rel="noopener">示例 generators</a></li>
+</ol>
+<p>参考链接:</p>
+<p><a href="https://howtonode.org/control-flow-part-ii" target="_blank" rel="noopener">control flow in node</a></p>
+<p><a href="http://blog.csdn.net/yanghua_kobe/article/details/8521962" target="_blank" rel="noopener">callback or promises?</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS" target="_blank" rel="noopener">cofs-http</a></p>
+<p><a href="http://code.tutsplus.com/tutorials/restful-api-design-with-nodejs-restify--cms-22637" target="_blank" rel="noopener">RESTful API Design With NodeJS &amp; Restify</a></p>
+<p><a href="https://github.com/frodefi/node-mysql-json-server" target="_blank" rel="noopener">node-mysql-json-server</a></p>
+<p><a href="https://www.owasp.org/index.php/OWASP_AJAX_Security_Guidelines#Always_return_JSON_with_an_Object_on_the_outside" target="_blank" rel="noopener">ajax security cheat sheet</a></p>
+<h4 id="angular2问题解集"><a href="#angular2问题解集" class="headerlink" title="angular2问题解集"></a>angular2问题解集</h4><p><a href="http://stackoverflow.com/questions/35534959/access-key-and-value-of-object-using-ngfor/35536052#35536052" target="_blank" rel="noopener">关于json解析成对象数组时</a></p>
+<p><a href="http://stackoverflow.com/questions/35647365/how-to-display-json-object-using-ngfor/35647396#35647396" target="_blank" rel="noopener">how to display json object using ngfor</a></p>
+<p><a href="https://angular.cn/docs/ts/latest/guide/server-communication.html#!#extract-data" target="_blank" rel="noopener">server-communication</a></p>
+<p><a href="https://fetch.spec.whatwg.org/#response-class" target="_blank" rel="noopener">fetch standard</a></p>
+<p><a href="http://reactlet.com/" target="_blank" rel="noopener">others works</a></p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/06/27/ichthyography/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ichthyography 鱼类学
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

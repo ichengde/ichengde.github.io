@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>leetcode | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="二进制问题 338. Counting Bitshttps://leetcode.com/problems/counting-bits/ 问题求0到n的二进制表示的1的数量 思路二进制+进位处理+遍历统计1位数目(最低效) 代码123456789class Solution &amp;#123;public:    vector&amp;lt;int&amp;gt; countBits(int num) &amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode">
+<meta property="og:url" content="http://chegde.github.io/2016/07/02/leetcode/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="二进制问题 338. Counting Bitshttps://leetcode.com/problems/counting-bits/ 问题求0到n的二进制表示的1的数量 思路二进制+进位处理+遍历统计1位数目(最低效) 代码123456789class Solution &amp;#123;public:    vector&amp;lt;int&amp;gt; countBits(int num) &amp;#123;">
+<meta property="og:updated_time" content="2018-01-05T14:27:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="leetcode">
+<meta name="twitter:description" content="二进制问题 338. Counting Bitshttps://leetcode.com/problems/counting-bits/ 问题求0到n的二进制表示的1的数量 思路二进制+进位处理+遍历统计1位数目(最低效) 代码123456789class Solution &amp;#123;public:    vector&amp;lt;int&amp;gt; countBits(int num) &amp;#123;">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-leetcode" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      leetcode
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2016/07/02/leetcode/" class="article-date">
+  <time datetime="2016-07-02T15:16:11.000Z" itemprop="datePublished">2016-07-02</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>二进制问题</p>
+<h3 id="338-Counting-Bits"><a href="#338-Counting-Bits" class="headerlink" title="338. Counting Bits"></a>338. Counting Bits</h3><p><a href="https://leetcode.com/problems/counting-bits/" target="_blank" rel="noopener">https://leetcode.com/problems/counting-bits/</a></p>
+<h5 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h5><p>求0到n的二进制表示的1的数量</p>
+<h5 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h5><p>二进制+进位处理+遍历统计1位数目(最低效)</p>
+<h5 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; countBits(int num) &#123;</span><br><span class="line">        vector&lt;int&gt; ret(num+1, 0);</span><br><span class="line">        for (int i = 1; i &lt;= num; ++i)</span><br><span class="line">            ret[i] = ret[i&amp;(i-1)] + 1;</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>重点在于 ret[i] = ret[i&amp;(i-1)] + 1</p>
+<ul>
+<li>应该寻找序列规律</li>
+<li>i&amp;(i-1)的本质是2的次方所表示的范围</li>
+<li>思考i&amp;(i-1)在算术上是什么作用</li>
+</ul>
+<h3 id="191-Number-of-1-Bits"><a href="#191-Number-of-1-Bits" class="headerlink" title="191. Number of 1 Bits"></a>191. Number of 1 Bits</h3><p><a href="https://leetcode.com/problems/number-of-1-bits/" target="_blank" rel="noopener">https://leetcode.com/problems/number-of-1-bits/</a></p>
+<h5 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h5><p>求一个数的二进制表示法中的1的数量</p>
+<h5 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int hammingWeight(uint32_t n) &#123;</span><br><span class="line">    return n == 0 ? 0 : 1 + hammingWeight(n &amp; (n - 1));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>思考i&amp;(i-1)到底做了什么<h5 id="思路1"><a href="#思路1" class="headerlink" title="思路1"></a>思路1</h5>使用&amp;运算,(i&amp;(i-1))的递推+1可得到二进制中1的数量<h5 id="思路2"><a href="#思路2" class="headerlink" title="思路2"></a>思路2</h5>逻辑与运算1，像右移位并统计。</li>
+</ul>
+<p>组合博奕</p>
+<h3 id="292-Nim-Game"><a href="#292-Nim-Game" class="headerlink" title="292. Nim Game"></a>292. Nim Game</h3><p><a href="https://leetcode.com/problems/nim-game/" target="_blank" rel="noopener">https://leetcode.com/problems/nim-game/</a></p>
+<h5 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h5><p>一堆石头,你和对手都可以拿走1-3个石头,最后拿光的那个人赢,我先手,求是否能赢</p>
+<h5 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h5><p>保持P状态就可赢,P状态指的是最小+最大可减数目=p状态<br>是否能进入p状态,n % 4 != 0 即可必胜</p>
+<h5 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool canWinNim(int n) &#123;</span><br><span class="line">        return n&amp;3;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="136-Single-Number"><a href="#136-Single-Number" class="headerlink" title="136. Single Number"></a>136. Single Number</h3><p><a href="https://leetcode.com/problems/single-number/" target="_blank" rel="noopener">https://leetcode.com/problems/single-number/</a></p>
+<h5 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h5><p>给一数组,每个数都出现两次,除了一个,找出那一个数.</p>
+<h5 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h5><p>异或算符的值为真仅当两个运算元中恰有一个的值为真，而另外一个的值为非真。<br>Xor运算 == 俩二进制不同为真</p>
+<h5 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">	int singleNumber(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">		int single = 0;</span><br><span class="line">		for (unsigned int i = 0; i &lt; nums.size(); i++) &#123;</span><br><span class="line">			single ^= nums[i];</span><br><span class="line">		&#125;</span><br><span class="line">		return single;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="258-Add-Digits"><a href="#258-Add-Digits" class="headerlink" title="258. Add Digits"></a>258. Add Digits</h3><p><a href="https://leetcode.com/problems/add-digits/" target="_blank" rel="noopener">https://leetcode.com/problems/add-digits/</a></p>
+<h5 id="问题-4"><a href="#问题-4" class="headerlink" title="问题"></a>问题</h5><p>给定一个非负数,对每位数进行相加,直到结果为一位数</p>
+<h5 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h5><p>寻找规律,发现结果为对输入数进行9的求余<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int addDigits(int num) &#123;</span><br><span class="line">		if (num &lt; 9) return num;</span><br><span class="line">		return (num %= 9) ? num : 9;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="104-Maximum-Depth-of-Binary-Tree"><a href="#104-Maximum-Depth-of-Binary-Tree" class="headerlink" title="104. Maximum Depth of Binary Tree"></a>104. Maximum Depth of Binary Tree</h3><h5 id="问题-5"><a href="#问题-5" class="headerlink" title="问题"></a>问题</h5><p>求二叉树的最大深度</p>
+<h5 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h5><p>Depth-first-search<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">	int maxDepth(TreeNode* root) &#123;</span><br><span class="line">		return root == NULL ? 0 : max(maxDepth(root-&gt;left), maxDepth(root-&gt;right))+1;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>Breadth-first-search<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">int maxDepth(TreeNode *root)</span><br><span class="line">&#123;</span><br><span class="line">    if(root == NULL)</span><br><span class="line">        return 0;</span><br><span class="line">    </span><br><span class="line">    int res = 0;</span><br><span class="line">    queue&lt;TreeNode *&gt; q;</span><br><span class="line">    q.push(root);</span><br><span class="line">    while(!q.empty())</span><br><span class="line">    &#123;</span><br><span class="line">        ++ res;</span><br><span class="line">        for(int i = 0, n = q.size(); i &lt; n; ++ i)</span><br><span class="line">        &#123;</span><br><span class="line">            TreeNode *p = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            </span><br><span class="line">            if(p -&gt; left != NULL)</span><br><span class="line">                q.push(p -&gt; left);</span><br><span class="line">            if(p -&gt; right != NULL)</span><br><span class="line">                q.push(p -&gt; right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/14/hexo/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          hexo
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/06/27/immunology/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">immunology 免疫学</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
