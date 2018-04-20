@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Understanding TypeScript’s type notation | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇博文快速介绍 TypeScript 静态类型的标注。 你将学习什么阅读本文后，您应该能够理解以下代码的含义。1234567interface Array&amp;lt;T&amp;gt; &amp;#123;  concat(...items: Array&amp;lt;T[] | T&amp;gt;): T[];  reduce&amp;lt;U&amp;gt;(    callback: (state: U, element: T, index">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Understanding TypeScript’s type notation">
+<meta property="og:url" content="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="这篇博文快速介绍 TypeScript 静态类型的标注。 你将学习什么阅读本文后，您应该能够理解以下代码的含义。1234567interface Array&amp;lt;T&amp;gt; &amp;#123;  concat(...items: Array&amp;lt;T[] | T&amp;gt;): T[];  reduce&amp;lt;U&amp;gt;(    callback: (state: U, element: T, index">
+<meta property="og:updated_time" content="2018-04-20T14:59:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Understanding TypeScript’s type notation">
+<meta name="twitter:description" content="这篇博文快速介绍 TypeScript 静态类型的标注。 你将学习什么阅读本文后，您应该能够理解以下代码的含义。1234567interface Array&amp;lt;T&amp;gt; &amp;#123;  concat(...items: Array&amp;lt;T[] | T&amp;gt;): T[];  reduce&amp;lt;U&amp;gt;(    callback: (state: U, element: T, index">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-Understanding-TypeScript’s-type-notation" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Understanding TypeScript’s type notation
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/04/19/Understanding-TypeScript’s-type-notation/" class="article-date">
+  <time datetime="2018-04-19T15:47:55.000Z" itemprop="datePublished">2018-04-19</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这篇博文快速介绍 TypeScript 静态类型的标注。</p>
+<h1 id="你将学习什么"><a href="#你将学习什么" class="headerlink" title="你将学习什么"></a>你将学习什么</h1><p>阅读本文后，您应该能够理解以下代码的含义。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">interface <span class="built_in">Array</span>&lt;T&gt; &#123;</span><br><span class="line">  concat(...items: <span class="built_in">Array</span>&lt;T[] | T&gt;): T[];</span><br><span class="line">  reduce&lt;U&gt;(</span><br><span class="line">    callback: <span class="function">(<span class="params">state: U, element: T, index: number, array: T[]</span>) =&gt;</span> U,</span><br><span class="line">    firstState?: U): U;</span><br><span class="line">  ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你认为这很神秘，那么我同意你的看法。 但是（正如我希望证明的），这个标注相对来说容易学习。 一旦你理解了它，它会告诉你，一个直接，精确和全面的总结这些代码行为。 无需阅读英文长篇描述。</p>
+<h1 id="尝试一下代码示例"><a href="#尝试一下代码示例" class="headerlink" title="尝试一下代码示例"></a>尝试一下代码示例</h1><p>TypeScript 有一个<a href="http://www.typescriptlang.org/play/" target="_blank" rel="noopener">在线编译</a>。 为了获得最全面的检查，应该打开 “option” 菜单中的所有内容。 这相当于在 –strict 模式下运行TypeScript编译器。</p>
+<h1 id="设置全部的类型检查"><a href="#设置全部的类型检查" class="headerlink" title="设置全部的类型检查"></a>设置全部的类型检查</h1><p>我总是使用 TypeScript 以最全面的设置 –strict。 没有它，程序的编写会变得相对容易些，但是你也会失去静态类型检查的许多好处。 目前，此设置启用以下子设置：</p>
+<ul>
+<li>–noImplicitAny: 如果 TypeScript 无法推断出某种类型，说明你没有启用这个选项。 这主要适用于函数和方法的参数：使用此设置，你就必须标注它们的类型。</li>
+<li>–noImplicitThis: 如果这个类型不明确，提示警告。</li>
+<li>–alwaysStrict: 尽可能使用 JavaScript 严格模式。</li>
+<li>–strictNullChecks: null 不是任何类型的一部分（除了它自己的类型，null），并且如果它是可接受的值，则必须明确给值。</li>
+<li>–strictFunctionTypes: 强化函数类型检查。</li>
+<li>–strictPropertyInitialization: 如果某个属性的值未定义，那么它必须在构造函数中初始化。</li>
+</ul>
+<p>更多信息：TypeScript手册中的“<a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank" rel="noopener">编译器选项</a>”一章。</p>
+<h1 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h1><p>在这篇博文中，类型是一组值。 JavaScript 语言（不是TypeScript！）有7种类型：</p>
+<ul>
+<li>Undefined: 元素为未定义的集合。</li>
+<li>Null: 元素为 null 的集合。</li>
+<li>Boolean: 元素为 false 或 true 的集合。</li>
+<li>Number: 元素为数字的集合。</li>
+<li>String: 元素为字符串的集合。</li>
+<li>Symbol: 元素为 symbols 的集合。</li>
+<li>Object: 元素为对象（包括函数和数组）的集合.</li>
+</ul>
+<p>所有这些类型都是动态的：您可以在运行时使用它们。</p>
+<p>TypeScript 在 JavaScript 基础上增加了一层：静态类型。它只存在于编译的时候或者源代码类型检查的时候。每一个有静态类型的储存（变量或者属性）地方都可以预知它的值。类型检查确保实现类型推断，不用运行代码就能进行静态类型检查。举个例子，如果函数f（x）的参数x具有静态数字类型，则函数调用f（’abc’）是非法的，因为参数’abc’是错误的静态类型参数。</p>
+<h1 id="类型标注"><a href="#类型标注" class="headerlink" title="类型标注"></a>类型标注</h1><p>类型标注在变量的冒号后面。冒号后面的静态类型标注描述了这个变量可以有什么值。下面一个例子表示这个变量只能储存数字类型。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x: <span class="built_in">number</span>;</span><br></pre></td></tr></table></figure></p>
+<p>你可能想知道如果 x 没有被初始化的时候是不是可以通过静态类型检查。对于这个问题， TypeScript 在给它赋值之前不会让你读取 x 。</p>
+<h1 id="类型推断"><a href="#类型推断" class="headerlink" title="类型推断"></a>类型推断</h1><p>在 TypeScript 中，即使所有变量你都写静态类型，但你不需要全部明确写它的静态类型。 TypeScript 经常可以推断出它。 例如，如果你写<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="number">123</span>;</span><br></pre></td></tr></table></figure></p>
+<p>然后TypeScript推断x具有数字静态类型。</p>
+<h1 id="描述类型"><a href="#描述类型" class="headerlink" title="描述类型"></a>描述类型</h1><p>类型表达式在类型标注的冒号之后出现。 这些范围从简单到复杂，创建如下</p>
+<p>合法的类型表达式有基本类型：</p>
+<ul>
+<li>JavaScript 动态类型的静态类型：undefined，null，boolean，number，string，symbol，object</li>
+<li>TypeScript 特定类型：any（所有值的类型）等</li>
+</ul>
+<p>注意，“未定义为值”和“未定义为类型”都被定义为未定义。 根据你使用它的地方，它作为一个值或者一个类型。 null也是一样。</p>
+<p>可以通过类型运算符组合基本类型来创建更多类型表达式，类型运算符与运算符 union（∪） 和 intersection（∩） 组合类似。</p>
+<p>接下来解释 TypeScript 提供的一些类型运算符。</p>
+<h2 id="数组作为列表"><a href="#数组作为列表" class="headerlink" title="数组作为列表"></a>数组作为列表</h2><p>有两种方法可以表示 Array arr 其元素都是数字的列表：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr: <span class="built_in">number</span>[] = [];</span><br><span class="line"><span class="keyword">let</span> arr: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt; = [];</span><br></pre></td></tr></table></figure>
+<p>通常情况下，如果有给值，TypeScript可以推断变量的类型。 在这种情况下，你实际上必须明确标注类型，因为对于空数组，它无法确定元素的类型。</p>
+<p>稍后，讲解尖括号表示法（Array<number>）。</number></p>
+<h2 id="数组作为元组"><a href="#数组作为元组" class="headerlink" title="数组作为元组"></a>数组作为元组</h2><p>如果您在数组中存储两个点，那么你将该数组用作元组。 这看起来如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> point: [<span class="built_in">number</span>, <span class="built_in">number</span>] = [<span class="number">7</span>, <span class="number">5</span>];</span><br></pre></td></tr></table></figure>
+<p>在这种情况下，不需要类型注释。<br>元组的另一个例子是 Object.entries（obj） 的结果：对于 obj 的每个属性都有一个 [key，value] 对的数组。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">Object</span>.entries(&#123;a:<span class="number">1</span>, b:<span class="number">2</span>&#125;)</span><br><span class="line">[ [ <span class="string">'a'</span>, <span class="number">1</span> ], [ <span class="string">'b'</span>, <span class="number">2</span> ] ]</span><br></pre></td></tr></table></figure>
+<p>Object.entries() 的类型是：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>&lt;[<span class="built_in">string</span>, <span class="built_in">any</span>]&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h1><p>这是一个函数类型的例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(num: <span class="built_in">number</span>) =&gt; <span class="built_in">string</span></span><br></pre></td></tr></table></figure>
+<p>该类型接受单个数字类型参数，和返回字符串类型的值。 让我们在类型注释中使用这个类型（字符串在这里用作函数）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> func: <span class="function">(<span class="params">num: <span class="built_in">number</span></span>) =&gt;</span> <span class="built_in">string</span> = <span class="built_in">String</span>;</span><br></pre></td></tr></table></figure>
+<p>同样，我们通常不会在这里使用类型注释，因为 TypeScript 知道 String 的类型，因此可以推断出 func 的类型。<br>下面的代码是一个更实用的例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function stringify123(callback: (num: number) =&gt; string) &#123;</span><br><span class="line">  <span class="keyword">return</span> callback(<span class="number">123</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用函数类型来描述 stringify123() 的回调函数。 由于此类型注释，TypeScript 拒绝以下函数调用。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(<span class="built_in">String</span>);</span><br></pre></td></tr></table></figure>
+<p>但它接受以下函数调用：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(<span class="built_in">Number</span>);</span><br></pre></td></tr></table></figure>
+<p>（原文在这可能顺序写反了）</p>
+<h2 id="函数结果类型声明"><a href="#函数结果类型声明" class="headerlink" title="函数结果类型声明"></a>函数结果类型声明</h2><p>标注函数的所有参数类型是一种很好的实践。 你也可以指定结果类型（但 TypeScript 很适合推断它）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function stringify123(callback: (num: number) =&gt; string): string &#123;</span><br><span class="line">  <span class="keyword">const</span> num = <span class="number">123</span>;</span><br><span class="line">  <span class="keyword">return</span> callback(num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="特殊结果类型-void"><a href="#特殊结果类型-void" class="headerlink" title="特殊结果类型 void"></a>特殊结果类型 void</h3><p>void 是函数结果的特殊类型：它告诉 TypeScript 函数总是返回 undefined （显式或隐式）：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>): <span class="title">void</span> </span>&#123; <span class="keyword">return</span> <span class="literal">undefined</span> &#125; <span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>): <span class="title">void</span> </span>&#123; &#125; <span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f3</span>(<span class="params"></span>): <span class="title">void</span> </span>&#123; <span class="keyword">return</span> <span class="string">'abc'</span> &#125; <span class="comment">// error</span></span><br></pre></td></tr></table></figure>
+<h2 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h2><p>标识符后面的问号表示该参数是可选的。 例如：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function stringify123(callback?: (num: number) =&gt; string) &#123;</span><br><span class="line">  <span class="keyword">const</span> num = <span class="number">123</span>;</span><br><span class="line">  <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">    <span class="keyword">return</span> callback(num); <span class="comment">// (A)</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">String</span>(num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果您在 –strict 模式下运行 TypeScript ，则会在检查回调没有被省略的情况下让你在 A 行中进行函数调用。</p>
+<h2 id="参数默认值"><a href="#参数默认值" class="headerlink" title="参数默认值"></a>参数默认值</h2><p>TypeScript 支持 <a href="http://exploringjs.com/es6/ch_parameter-handling.html#sec_parameter-default-values" target="_blank" rel="noopener">ES6参数默认值</a>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPoint</span>(<span class="params">x=0, y=0</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> [x, y];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>默认值使参数可选。 通常可以省略类型注释，因为 TypeScript 可以推断类型。 例如，它可以推断x和y都具有数字类型。</p>
+<p>如果你想添加类型注释，那看起来如下。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPoint</span>(<span class="params">x:<span class="built_in">number</span> = 0, y:<span class="built_in">number</span> = 0</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> [x, y];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="剩余类型"><a href="#剩余类型" class="headerlink" title="剩余类型"></a>剩余类型</h2><p>您还可以使用 <a href="http://exploringjs.com/es6/ch_parameter-handling.html#sec_rest-parameters" target="_blank" rel="noopener">ES6 rest 运算符</a>来处理 TypeScript 参数定义。 相应参数的类型必须是Array：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">joinNumbers</span>(<span class="params">...nums: <span class="built_in">number</span>[]</span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> nums.join(<span class="string">'-'</span>);</span><br><span class="line">&#125;</span><br><span class="line">joinNumbers(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); <span class="comment">// '1-2-3'</span></span><br></pre></td></tr></table></figure>
+<h1 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h1><p>在JavaScript中，变量常常是几种类型之一。 要描述这些变量，你可以使用联合类型。<br>例如，在以下代码中，x 的类型为 null 或类型 number ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="literal">null</span>;</span><br><span class="line">x = <span class="number">123</span>;</span><br></pre></td></tr></table></figure>
+<p>x 的类型可以被描述为 null | number ：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x: <span class="literal">null</span>|<span class="built_in">number</span> = <span class="literal">null</span>;</span><br><span class="line">x = <span class="number">123</span>;</span><br></pre></td></tr></table></figure>
+<p>类型表达式 s | t 的结果是 类型s 和 t 的集合论联合（正如我们前面所看到的那样，这两个集合）。</p>
+<p>让我们重写函数 stringify123() ：这一次，我们不希望参数回调是可选的。 应该总是传递该参数。 如果调用者不想提供函数，他们必须显式传递null。 这是实现如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stringify123</span>(<span class="params"></span></span></span><br><span class="line">  callback: null | ((num: number) =&gt; string)) &#123;</span><br><span class="line">  <span class="keyword">const</span> num = <span class="number">123</span>;</span><br><span class="line">  <span class="keyword">if</span> (callback) &#123; <span class="comment">// (A)</span></span><br><span class="line">    <span class="keyword">return</span> callback(<span class="number">123</span>); <span class="comment">// (B)</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">String</span>(num);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，实际上我们必须检查回调是否是一个函数（A行），然后才能在B行进行函数调用。如果没有检查，TypeScript将报告错误。</p>
+<h1 id="？-与-undefined-T"><a href="#？-与-undefined-T" class="headerlink" title="？ 与 undefined| T"></a>？ 与 undefined| T</h1><p>类型T的可选参数？ 和类型为 undefined | T 的参数非常相似。 （顺便说一句，对于可选属性也是如此。） </p>
+<p>主要区别是可以省略可选参数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">x?: <span class="built_in">number</span></span>) </span>&#123; &#125;</span><br><span class="line">f1(); <span class="comment">// OK</span></span><br><span class="line">f1(<span class="literal">undefined</span>); <span class="comment">// OK</span></span><br><span class="line">f1(<span class="number">123</span>); <span class="comment">// OK</span></span><br></pre></td></tr></table></figure>
+<p>但是你不能省略类型为 undefined| T 的参数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">x?: <span class="built_in">number</span></span>) </span>&#123; &#125;</span><br><span class="line">f1(); <span class="comment">// OK</span></span><br><span class="line">f1(<span class="literal">undefined</span>); <span class="comment">// OK</span></span><br><span class="line">f1(<span class="number">123</span>); <span class="comment">// OK</span></span><br></pre></td></tr></table></figure>
+<h2 id="在类型中，通常不包含-null-和-undefined-值"><a href="#在类型中，通常不包含-null-和-undefined-值" class="headerlink" title="在类型中，通常不包含 null 和 undefined 值"></a>在类型中，通常不包含 null 和 undefined 值</h2><p>在许多编程语言中， null 是所有类型的一部分。<br>例如，在 java 中，只要参数的类型是 String ，就可以传递 null 并且 Java 不会报错</p>
+<p>相比之下，在 TypeScript 中，undefined 和 null 由不同的类型处理。 如果你想跟上述一样，你需要一个类型联合，比如 undefined | number 和 null | number 。</p>
+<h1 id="对象类型"><a href="#对象类型" class="headerlink" title="对象类型"></a>对象类型</h1><p>与数组类似，对象在 JavaScript 中扮演两个角色（ 偶尔混合 和 或更动态 ）：</p>
+<ul>
+<li>记录：开发时已知的固定数量的属性。 每个属性可以有不同的类型。</li>
+<li>字典：在开发时不知道名称的任意数量的属性。 所有属性键（字符串和/或符号）具有相同的类型，属性值也是如此。</li>
+</ul>
+<p>我们将在此文中忽略对象作为词典。 另外，无论如何，Maps 对于字典来说通常是更好的选择。</p>
+<h2 id="通过-interfaces-描述对象类型作为记录"><a href="#通过-interfaces-描述对象类型作为记录" class="headerlink" title="通过 interfaces 描述对象类型作为记录"></a>通过 interfaces 描述对象类型作为记录</h2><p>interfaces 描述对象类型。 例如：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Point &#123;</span><br><span class="line">  x: <span class="built_in">number</span>;</span><br><span class="line">  y: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TypeScript的类型系统的一大优点是它是结构化的，而不是字面化。 也就是说， interface 匹配具有适当结构的所有对象：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pointToString</span>(<span class="params">p: Point</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`(<span class="subst">$&#123;p.x&#125;</span>, <span class="subst">$&#123;p.y&#125;</span>)`</span>;</span><br><span class="line">&#125;</span><br><span class="line">pointToString(&#123;x: <span class="number">5</span>, y: <span class="number">7</span>&#125;); <span class="comment">// '(5, 7)'</span></span><br></pre></td></tr></table></figure>
+<p>相比之下，Java的类型系统需要类来实现接口。</p>
+<h2 id="可选属性"><a href="#可选属性" class="headerlink" title="可选属性"></a>可选属性</h2><p>如果一个属性可以被省略，你在变量后面加一个问号：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">  company?: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Interfaces 也可包含函数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Point &#123;</span><br><span class="line">  x: <span class="built_in">number</span>;</span><br><span class="line">  y: <span class="built_in">number</span>;</span><br><span class="line">  distance(other: Point): <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="类型变量和泛型类型"><a href="#类型变量和泛型类型" class="headerlink" title="类型变量和泛型类型"></a>类型变量和泛型类型</h1><p>使用静态类型，有两个级别：</p>
+<ul>
+<li>对象级别</li>
+<li>元类型级别</li>
+</ul>
+<p>相似于</p>
+<ul>
+<li>对象储存正常变量</li>
+<li>描述类型的变量，也是值类型的变量</li>
+</ul>
+<p>正常变量通过 const，let 等引入。<br>类型变量通过尖括号（&lt;&gt;）引入。 例如，以下代码包含通过引入的类型变量T.</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Stack&lt;T&gt; &#123;</span><br><span class="line">  push(x: T): <span class="built_in">void</span>;</span><br><span class="line">  pop(): T;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你可以看到类型 参数T 在 Stack中 出现两次。 所以这个界面可以直观地理解如下：</p>
+<ul>
+<li>Stack 是一堆所有具有给定 类型T 的值。每当提到 Stack 时，您必须填写T. 接下来我们将看到如何。</li>
+<li>push 函数 接受 T类型参数</li>
+<li>pop 函数 返回 T类型值</li>
+</ul>
+<p>如果你使用 Stack ，你就需要给定 T的值。<br>以下代码显示了一个虚接口 Stack ，其唯一目的是匹配接口。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dummyStack: Stack&lt;<span class="built_in">number</span>&gt; = &#123;</span><br><span class="line">  push(x: <span class="built_in">number</span>) &#123;&#125;,</span><br><span class="line">  pop() &#123; <span class="keyword">return</span> <span class="number">123</span> &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="示例：Maps"><a href="#示例：Maps" class="headerlink" title="示例：Maps"></a>示例：Maps</h3><p>TypeScript 定义 Map 类型。例如：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myMap: Map&lt;<span class="built_in">boolean</span>,<span class="built_in">string</span>&gt; = <span class="keyword">new</span> Map([</span><br><span class="line">  [<span class="literal">false</span>, <span class="string">'no'</span>],</span><br><span class="line">  [<span class="literal">true</span>, <span class="string">'yes'</span>],</span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+<h3 id="泛型函数"><a href="#泛型函数" class="headerlink" title="泛型函数"></a>泛型函数</h3><p>函数（和方法）也可以引入类型变量：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">id</span>&lt;<span class="title">T</span>&gt;(<span class="params">x: T</span>): <span class="title">T</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用如下</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id&lt;<span class="built_in">number</span>&gt;(<span class="number">123</span>);</span><br></pre></td></tr></table></figure>
+<p>由于类型推理，可以省略类型参数</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id(<span class="number">123</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="类型参数的传递"><a href="#类型参数的传递" class="headerlink" title="类型参数的传递"></a>类型参数的传递</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fillArray</span>&lt;<span class="title">T</span>&gt;(<span class="params">len: <span class="built_in">number</span>, elem: T</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Array</span>&lt;T&gt;(len).fill(elem);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不必显式指定 Array 的类型T - 它是从参数 elem 推断出来的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = fillArray(<span class="number">3</span>, <span class="string">'*'</span>);</span><br><span class="line">  <span class="comment">// Inferred type: string[]</span></span><br></pre></td></tr></table></figure>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>让我们用我们所学的知识来理解我们之前看到的那段代码：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Array&lt;T&gt; &#123;</span><br><span class="line">  concat(...items: <span class="built_in">Array</span>&lt;T[] | T&gt;): T[];</span><br><span class="line">  reduce&lt;U&gt;(</span><br><span class="line">    callback: <span class="function">(<span class="params">state: U, element: T, index: <span class="built_in">number</span>, array: T[]</span>) =&gt;</span> U,</span><br><span class="line">    firstState?: U): U;</span><br><span class="line">  ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个数组的 interface ，其元素的类型为 T ，我们必须在使用此 interface 时填写它们：</p>
+<p>方法 .concat() 有零个或更多参数（通过剩余参数操作符）。他们中的每个函数有类型 T[] 或 T 。因此，它可能是类型T<br> 的数组或者是单个 T 的值。</p>
+<p>方法 .reduce() 引进了它自己的类型变量，U 。 U 表示以下实体全都具有相同类型（不需要指定，它会自动推断）：</p>
+<ul>
+<li>回调函数里的 state 参数</li>
+<li>回调函数里的结果</li>
+<li>方法 .reduce() 的可选参数 firstState</li>
+<li>.reduce() 的结果</li>
+</ul>
+<p>回调函数也获取一个参数 element ，其类型与数组元素的 类型T 相同，参数 index 是数字，参数 array 是 T值 。</p>
+<h1 id="进一步阅读"><a href="#进一步阅读" class="headerlink" title="进一步阅读"></a>进一步阅读</h1><ul>
+<li>书 (在线免费阅读): “<a href="http://exploringjs.com/es6/" target="_blank" rel="noopener">Exploring ES6</a>”</li>
+<li>“<a href="https://tc39.github.io/ecma262/#sec-ecmascript-language-types" target="_blank" rel="noopener">ECMAScript Language Types</a>” 在 ECMAScript 规范.</li>
+<li>“<a href="http://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" rel="noopener">TypeScript Handbook</a>”: 一本写的很好解释了 TypeScript 支持的多种类型及类型操作。</li>
+<li>TypeScript 仓库里有完整 ECMAScript 标准库的类型定义。练习类型标注的简单方法是阅读它们。</li>
+</ul>
+<p>本文翻译自<a href="http://2ality.com/2018/04/type-notation-typescript.html?utm_source=ESnextNews.com&amp;utm_medium=Weekly+Newsletter&amp;utm_campaign=2018-04-17" target="_blank" rel="noopener">原文 - Understanding TypeScript’s type notation</a> -&gt; <a href="https://github.com/ichengde/ichengde.github.io" target="_blank" rel="noopener">star</a></p>
+<p>由于本人水平有限，错误之处在所难免，敬请指正！</p>
+<p>转载请注明出处，保留原文链接以及作者信息。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/12/Fetch/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">用可中断的 Fetch 取消请求</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>用可中断的 Fetch 取消请求 | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在用户交互或者最新输入的时候，你常常需要在一个 web 应用中频繁发起请求。比如说在输入文字的时候的自动完成操作或者是在地图上放大缩小的操作。让我们花一点时间去思考一下这些例子。首先是自动完成，每一次我们输入的时候（或者更少在用 debounce 时）我们就会发出一个请求。如果用户输入改变的时候，旧的请求就会与现在无关，当我们持续打字输入的时候（比如 “java” 和 “javascript” ）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用可中断的 Fetch 取消请求">
+<meta property="og:url" content="http://chegde.github.io/2018/04/12/Fetch/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="在用户交互或者最新输入的时候，你常常需要在一个 web 应用中频繁发起请求。比如说在输入文字的时候的自动完成操作或者是在地图上放大缩小的操作。让我们花一点时间去思考一下这些例子。首先是自动完成，每一次我们输入的时候（或者更少在用 debounce 时）我们就会发出一个请求。如果用户输入改变的时候，旧的请求就会与现在无关，当我们持续打字输入的时候（比如 “java” 和 “javascript” ）">
+<meta property="og:image" content="https://www.loxodrome.io/images/blog/abort/abortable-fetch.gif">
+<meta property="og:updated_time" content="2018-04-19T17:21:57.460Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用可中断的 Fetch 取消请求">
+<meta name="twitter:description" content="在用户交互或者最新输入的时候，你常常需要在一个 web 应用中频繁发起请求。比如说在输入文字的时候的自动完成操作或者是在地图上放大缩小的操作。让我们花一点时间去思考一下这些例子。首先是自动完成，每一次我们输入的时候（或者更少在用 debounce 时）我们就会发出一个请求。如果用户输入改变的时候，旧的请求就会与现在无关，当我们持续打字输入的时候（比如 “java” 和 “javascript” ）">
+<meta name="twitter:image" content="https://www.loxodrome.io/images/blog/abort/abortable-fetch.gif">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-Fetch" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      用可中断的 Fetch 取消请求
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/04/12/Fetch/" class="article-date">
+  <time datetime="2018-04-12T03:53:03.000Z" itemprop="datePublished">2018-04-12</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在用户交互或者最新输入的时候，你常常需要在一个 web 应用中频繁发起请求。比如说在输入文字的时候的自动完成操作或者是在地图上放大缩小的操作。让我们花一点时间去思考一下这些例子。首先是自动完成，每一次我们输入的时候（或者更少在用 <a href="https://davidwalsh.name/javascript-debounce-function" target="_blank" rel="noopener">debounce</a> 时）我们就会发出一个请求。如果用户输入改变的时候，旧的请求就会与现在无关，当我们持续打字输入的时候（比如 “java” 和 “javascript” ）。也许有很多冗余请求，在我们拿到我们需要的东西的时候。</p>
+<p>然后是地图的例子。我们在缩放查看地图的时候，我们对于之前缩放级别的图块不再感兴趣。与此同时，为了冗余数据，许多请求还处于等待。</p>
+<p>带着我们第一个例子，看看实现一个自动完成场景的原生代码。为了本文的目的，我们将使用更现代的 fetch 而不是 XMLHttpRequest 来提出网络请求。 代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">autocompleteInput.addEventListener(<span class="string">'keydown'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">"https://api.example.com/autocomplete"</span></span><br><span class="line"></span><br><span class="line">    fetch(url)</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// Do something with the response</span></span><br><span class="line">            updateAutocompleteMenu()</span><br><span class="line">        &#125;)</span><br><span class="line">        .catch(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// Something went wrong</span></span><br><span class="line">            handleAutocompleteError(error);</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这个例子的问题就是每一个请求都要完成，即使它不再相关。我们可以实现一个额外的逻辑在 updateAutocompeleteMenu 中去防止额外的代码，但是却不能真正停止这个请求。值得注意的是，浏览器有<a href="https://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser" target="_blank" rel="noopener">同时请求的限制</a>，这意味着一旦限制被触发时，请求将队列化（而且每个浏览器限制又不同）。</p>
+<h2 id="Abortable-Fetch"><a href="#Abortable-Fetch" class="headerlink" title="Abortable Fetch"></a>Abortable Fetch</h2><p>我们可以用来解决上述问题的新浏览器技术是 <a href="https://developers.google.com/web/updates/2017/09/abortable-fetch" target="_blank" rel="noopener">Abortable Fetch</a> 。 Abortable Fetch 依赖浏览器的规范 <a href="https://dom.spec.whatwg.org/#aborting-ongoing-activities" target="_blank" rel="noopener">AbortController</a> 。这个控制器有 signal 属性，我们用它传递，在之后的时机中用控制器中断方法去取消请求。</p>
+<p>一个例子如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">autocompleteInput.addEventListener(<span class="string">'keydown'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"https://api.example.com/autocomplete"</span></span><br><span class="line"><span class="keyword">let</span> controller;</span><br><span class="line"><span class="keyword">let</span> signal;</span><br><span class="line"></span><br><span class="line">autocompleteInput.addEventListener(<span class="string">'keyup'</span>, () =&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (controller !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="comment">// Cancel the previous request</span></span><br><span class="line">        controller.abort();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feature detect</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">"AbortController"</span> <span class="keyword">in</span> <span class="built_in">window</span>) &#123;</span><br><span class="line">        controller = <span class="keyword">new</span> AbortController;</span><br><span class="line">        signal = controller.signal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Pass the signal to the fetch request</span></span><br><span class="line">    fetch(url, &#123;signal&#125;)</span><br><span class="line">        .then(<span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// Do something with the response</span></span><br><span class="line">            updateAutocompleteMenu()</span><br><span class="line">        &#125;)</span><br><span class="line">        .catch(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// Something went wrong</span></span><br><span class="line">            handleAutocompleteError(error);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>我们进行特性检测，以确定我们是否可以使用 AbortController （它在 Edge，Firefox，Opera 和 Chrome 66 中支持！）。我们确认是否有一个控制器已经创建，如果是，我们调用 controller.abort() 去取消之前的请求。你也可以一次用相同的 signal 取消多个 fetches 。</p>
+<h2 id="一个小例子"><a href="#一个小例子" class="headerlink" title="一个小例子"></a>一个小例子</h2><p>我创建了一个展示如何使用 Abortable Fetch 小例子，基于自动完成场景的想法（没有任何实现细节！）。去理解每当输入网络请求时会发生什么。 如果您在旧请求完成之前进行了新的输入，它将中止先前的抓取。 在实践中它看起来有点像这样：</p>
+<p><img src="https://www.loxodrome.io/images/blog/abort/abortable-fetch.gif" alt="abortable fetch"></p>
+<p><a href="https://github.com/JamesMilnerUK/abortable-fetch-example" target="_blank" rel="noopener">源代码</a></p>
+<h2 id="深入思考"><a href="#深入思考" class="headerlink" title="深入思考"></a>深入思考</h2><p>也许 AbortController 最酷的部分是它被设计成一个中止异步任务的通用机制。它是 <a href="https://dom.spec.whatwg.org/#aborting-ongoing-activities" target="_blank" rel="noopener">WHATWG specification</a> 的一部分。这意味着它是DOM规范而不是语言（ECMAScript）规范，但对于前端开发来说，这仍然是一个有用的功能。你可以利用它作为一个更清晰的异步控制流机制，用于实现异步任务的时候（即当使用 Promises 时）。这篇<a href="https://www.bram.us/2017/12/13/cancel-a-javascript-promise-with-abortcontroller/" target="_blank" rel="noopener">Bram Van Damme super article for a more detailed example 文章</a>会有更多我所讲述的细节。</p>
+<p>本翻译自<a href="https://www.loxodrome.io/post/cancelling-requests/" target="_blank" rel="noopener">原文 - Cancelling Requests with Abortable Fetch</a>。不定期更新<a href="http://ichengde.github.io/" target="_blank" rel="noopener">技术博文</a>欢迎<a href="https://github.com/ichengde/ichengde.github.io" target="_blank" rel="noopener">star</a>。由于本人水平有限，错误之处在所难免，敬请指正！转载请注明出处，保留原文链接以及作者信息。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/04/19/Understanding-TypeScript’s-type-notation/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Understanding TypeScript’s type notation
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/04/11/check-out-the-es2017-major-features/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ECMAScript Goodies I: Check out the ES2017 Major Features</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
