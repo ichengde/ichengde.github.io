@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/</loc>
+    
+    <lastmod>2018-04-21T15:48:20.588Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://chegde.github.io/2018/04/19/Understanding-TypeScript%E2%80%99s-type-notation/</loc>
     
     <lastmod>2018-04-20T14:59:06.000Z</lastmod>

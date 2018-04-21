@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://chegde.github.io/"/>
-  <updated>2018-04-20T14:59:06.000Z</updated>
+  <updated>2018-04-21T15:48:20.588Z</updated>
   <id>http://chegde.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>How to use IndexedDB to build Progressive Web Apps</title>
+    <link href="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/"/>
+    <id>http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/</id>
+    <published>2018-04-21T15:09:53.000Z</published>
+    <updated>2018-04-21T15:48:20.588Z</updated>
+    
+    <content type="html"><![CDATA[<p>阅读<a href="https://itnext.io/indexeddb-your-second-step-towards-progressive-web-apps-pwa-dcbcd6cc2076" target="_blank" rel="noopener">原文</a>，并写下相关要点。</p><p>你需要有在<a href="https://itnext.io/service-workers-your-first-step-towards-progressive-web-apps-pwa-e4e11d1a2e85" target="_blank" rel="noopener">Service Workers 中的 IndexedDB 的实现</a>的 Service Workers 相关概念及知识。</p><h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>单页应用基本需要 web service 装在数据。数据通过控制器注入 DOM 中。大多数前端框架都这么做。</p><p>你可以缓存静态网页和资源文件，尤其是浏览的数据，但没有网络的时候，用户可以从当地数据库缓存中进行读取。</p><p>IndexedDB 是被废弃的 Web SQL 数据库的代替品。一个键值对的 NoSQL 且支持超大储存（上浮20-50%硬盘空间）的数据库。支持数据类型 number, string, JSON, blob 等等。</p><p>IndexedDB遵守同源策略。这意味着不同应用不能相互访问数据库。这是事件驱动，具有事务性，原子操作，API 异步的数据库。被所有主流浏览器支持，不支持的以后也会支持。非常适合储存离线数据。</p><blockquote><p>IndexedDB 2.0 是一个值得一看的。虽然所有浏览器都不支持。</p></blockquote><p><img src="https://cdn-images-1.medium.com/max/2000/1*tNO1zpxveeHqDnhsCSXiSg.png" alt=""></p><p>我用几个小 API 吧，文档<a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB" target="_blank" rel="noopener">在</a><a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB" target="_blank" rel="noopener">这</a>。</p><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>IndexedDB 由多个 object store 组成。像 MySQL 的表、 MongoDB 的集合。每个储存都有多个对象。像是 MySQL 表里的行。</p><p>object store 可以记录多行，是键值对型的。每行靠 key 上升排序。数据库里只能有一个独一无二的 object store 名字。<br>一个数据库创建的时候，版本为1。 数据库不能有多版本。</p><p>可以被多个客户端连接，读写操作具有事务性，</p><p>key 的类型：string, date, float, a binary blob, or an array。</p><p>value 跟 JavaScript 表达的一样：boolean, number, string, date, object, array, regexp, undefined and null。</p><p>用 IndexedDB 的基本操作：</p><ul><li>打开数据库。</li><li>创建一个 object store。</li><li>事务性执行数据库操作，如添加或检索数据。</li><li>等操作完成，通过监听事件。</li><li>用读出结果坐点东西。</li></ul><p>window 和 service worker 的全局作用域里都可以使用。<br>检查一下支持不，window.indexedDB or self.IndexedDB。</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(self.IndexedDB)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'IndexedDB is supported'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>.open(dbName, versionInt) 打开数据库。传入名字和版本号。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;阅读&lt;a href=&quot;https://itnext.io/indexeddb-your-second-step-towards-progressive-web-apps-pwa-dcbcd6cc2076&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;原文&lt;
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Understanding TypeScript’s type notation</title>
