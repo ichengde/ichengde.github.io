@@ -135,6 +135,10 @@
 <p>学习如何正确使用是一个大问题。遵从下面的建议去让你更好使用离线数据库：</p>
 <ul>
 <li>service worker 的 install 事件中去缓存静态文件。</li>
+<li>在 service 的 activate 事件中初始化数据库比 worker 的 install 事件好。新数据库与 old service worker 混合使用可能会产生冲突。用 keyPath 作为 URL 储存点。</li>
+<li>无论在线或离线，你的 app 会使用缓存文件。但获取数据的请求依然会发出。</li>
+<li>当线上请求出现错误的时候，设计一个 offline-api 的地址，进入 service worker 获取数据库数据。</li>
+<li>请求以 /offline-api 开头，那么使用等于请求 keyPath 从数据库提取数据， 在 application/json 之类的响应上设置适当的头并将响应返回给浏览器。 你可以使用 Response 构造函数。</li>
 </ul>
 
       
