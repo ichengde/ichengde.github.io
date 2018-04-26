@@ -18,7 +18,7 @@
 <meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*1mOOVxVW4Psd1EeoZkzbgg.png">
 <meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*pOtP0kYR0d3SaaC9lXzPyg.png">
 <meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*9SmdZL3EIWCNBDhc_r4nsQ.png">
-<meta property="og:updated_time" content="2018-04-25T15:58:01.992Z">
+<meta property="og:updated_time" content="2018-04-26T15:53:30.666Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="How to use IndexedDB to build Progressive Web Apps">
 <meta name="twitter:description" content="阅读原文，并写下相关要点。 你需要有在Service Workers 中的 IndexedDB 的实现的 Service Workers 相关概念及知识。 开始单页应用基本需要 web service 装在数据。数据通过控制器注入 DOM 中。大多数前端框架都这么做。 你可以缓存静态网页和资源文件，尤其是浏览的数据，但没有网络的时候，用户可以从当地数据库缓存中进行读取。 IndexedDB 是被废">
@@ -146,6 +146,19 @@
 <li>无论在线或离线，你的 app 会使用缓存文件。但获取数据的请求依然会发出。</li>
 <li>当线上请求出现错误的时候，设计一个 offline-api 的地址，进入 service worker 获取数据库数据。</li>
 <li>请求以 /offline-api 开头，那么使用等于请求 keyPath 从数据库提取数据， 在 application/json 之类的响应上设置适当的头并将响应返回给浏览器。 你可以使用 Response 构造函数。</li>
+</ul>
+<p>用上面的方法，可以构造一个完全离线使用的应用。作者准备写一系列的文章去细讲 Progress Web Apps。</p>
+<p>这篇文章可能漏讲一些东西，去仔细审阅文档吧。</p>
+<p>与缓存API不同，IndexedDB API是事件驱动的，而不是基于 Promise 的。使用一些indexeddb包装库，它允许你编写基于promise的代码。</p>
+<ul>
+<li><a href="https://github.com/localForage/localForage" target="_blank" rel="noopener">localForage</a> (~8KB, promises, good legacy browser support)</li>
+<li><a href="https://www.npmjs.com/package/idb-keyval" target="_blank" rel="noopener">IDB-keyval</a> (500 byte alternative to localForage, for modern browsers)</li>
+<li><a href="https://www.npmjs.com/package/idb" target="_blank" rel="noopener">IDB-promised</a> (~2k, same IndexedDB API, but with promises)</li>
+<li><a href="http://dexie.org/" target="_blank" rel="noopener">Dexie</a> (~16KB, promises, complex queries, secondary indices)</li>
+<li><a href="https://pouchdb.com/" target="_blank" rel="noopener">PouchDB</a> (~45KB (supports custom builds), synchronization)</li>
+<li><a href="https://github.com/google/lovefield" target="_blank" rel="noopener">Lovefield</a> (relational)</li>
+<li><a href="http://lokijs.org/#/" target="_blank" rel="noopener">LokiJS</a> (in-memory)</li>
+<li><a href="https://github.com/yathit/ydn-db" target="_blank" rel="noopener">ydn-db</a> (dexie-like, works with WebSQL)</li>
 </ul>
 
       
