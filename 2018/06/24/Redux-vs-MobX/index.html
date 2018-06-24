@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Redux vs MobX | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="两者都可以跟React使用。选择他们各自的好处是什么？单储存 vs 多储存你的数据存在store中。Redux用一个超大store保存状态(Redux 也可以使用多store)，MobX用了多个store，所以MobX你可以分离你的store。Redux的数据更规范。MobX可以有不规范的数据。 纯数据 vs 可观察数据Redux用原生结构储存数据，MobX用observable储存数据。这意味着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redux vs MobX">
+<meta property="og:url" content="http://chegde.github.io/2018/06/24/Redux-vs-MobX/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="两者都可以跟React使用。选择他们各自的好处是什么？单储存 vs 多储存你的数据存在store中。Redux用一个超大store保存状态(Redux 也可以使用多store)，MobX用了多个store，所以MobX你可以分离你的store。Redux的数据更规范。MobX可以有不规范的数据。 纯数据 vs 可观察数据Redux用原生结构储存数据，MobX用observable储存数据。这意味着">
+<meta property="og:updated_time" content="2018-06-24T03:44:49.649Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redux vs MobX">
+<meta name="twitter:description" content="两者都可以跟React使用。选择他们各自的好处是什么？单储存 vs 多储存你的数据存在store中。Redux用一个超大store保存状态(Redux 也可以使用多store)，MobX用了多个store，所以MobX你可以分离你的store。Redux的数据更规范。MobX可以有不规范的数据。 纯数据 vs 可观察数据Redux用原生结构储存数据，MobX用observable储存数据。这意味着">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-Redux-vs-MobX" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Redux vs MobX
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/06/24/Redux-vs-MobX/" class="article-date">
+  <time datetime="2018-06-24T03:43:38.000Z" itemprop="datePublished">2018-06-24</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="两者都可以跟React使用。选择他们各自的好处是什么？"><a href="#两者都可以跟React使用。选择他们各自的好处是什么？" class="headerlink" title="两者都可以跟React使用。选择他们各自的好处是什么？"></a>两者都可以跟React使用。选择他们各自的好处是什么？</h1><h2 id="单储存-vs-多储存"><a href="#单储存-vs-多储存" class="headerlink" title="单储存 vs 多储存"></a>单储存 vs 多储存</h2><p>你的数据存在store中。<br>Redux用一个超大store保存状态(Redux 也可以使用多store)，MobX用了多个store，所以MobX你可以分离你的store。<br>Redux的数据更规范。MobX可以有不规范的数据。</p>
+<h2 id="纯数据-vs-可观察数据"><a href="#纯数据-vs-可观察数据" class="headerlink" title="纯数据 vs 可观察数据"></a>纯数据 vs 可观察数据</h2><p>Redux用原生结构储存数据，MobX用observable储存数据。<br>这意味着Redux你不得不追踪所有的数据，而MobX只监听发生变化的数据。</p>
+<h2 id="不可变-vs-可变-（纯-vs-不纯）"><a href="#不可变-vs-可变-（纯-vs-不纯）" class="headerlink" title="不可变 vs 可变 （纯 vs 不纯）"></a>不可变 vs 可变 （纯 vs 不纯）</h2><p>Redux用不可变的状态，意味着所有状态只读且无法直接重写。在Redux，之前的状态会被新状态取代。结果而言，Redux是纯函数。这导致回退到之前的状态是困难的。<br>MobX状态可以被重写，你可以简单用新值更新状态。MobX可以说是不纯的。</p>
+<h2 id="掌握难度"><a href="#掌握难度" class="headerlink" title="掌握难度"></a>掌握难度</h2><p>MobX更容易学和驾驭，尤其是大多数传统Javascript 开发者熟悉OOP的话。MobX做的抽象让你不需要担心太多事情。Redux遵循了函数式编程的范例，对函数式编程没有经验的Javascript开发者，很难完全掌握Redux。可能需要学习Redux Thunk这类中间件，上升学习难度。</p>
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>由于这些抽象，让调试麻烦一点。现有的MobX调试工具都差不多，有时候结果都不可预测。<br>而Redux提供的调试工具还包括了时间旅行，这种纯函数加上更少的抽象，让调试比MobX有更好的体验，遵循流式编程让Redux更可靠。</p>
+<h2 id="可扩展性和可维护性"><a href="#可扩展性和可维护性" class="headerlink" title="可扩展性和可维护性"></a>可扩展性和可维护性</h2><p>由于Redux有上述原因，Redux更可靠些。</p>
+<h2 id="支持度"><a href="#支持度" class="headerlink" title="支持度"></a>支持度</h2><p>Redux 社区力量更大些。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">How to use IndexedDB to build Progressive Web Apps</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
