@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://chegde.github.io/2018/08/26/perf-notes/</loc>
+    
+    <lastmod>2018-08-26T13:18:55.360Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://chegde.github.io/2018/06/24/Redux-vs-MobX/</loc>
     
     <lastmod>2018-06-24T03:44:49.649Z</lastmod>

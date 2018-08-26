@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>perf_notes | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="来源 Angular Core Reader3 中的 perf-notes通用每个 Array 开销为 70 字节，由数组和 (array) 对象组成。  显式定义的数组 item 每个 32 字节。  (array) 虚拟机对象是 38 字节。  每个对象开销为 24 字节 加 每个属性 8 字节。 直接储存数据作为列表来使用是比小数组的更有性能效率。速度比较结果 Monomorphic vs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="perf_notes">
+<meta property="og:url" content="http://chegde.github.io/2018/08/26/perf-notes/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="来源 Angular Core Reader3 中的 perf-notes通用每个 Array 开销为 70 字节，由数组和 (array) 对象组成。  显式定义的数组 item 每个 32 字节。  (array) 虚拟机对象是 38 字节。  每个对象开销为 24 字节 加 每个属性 8 字节。 直接储存数据作为列表来使用是比小数组的更有性能效率。速度比较结果 Monomorphic vs">
+<meta property="og:updated_time" content="2018-08-26T13:18:55.360Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="perf_notes">
+<meta name="twitter:description" content="来源 Angular Core Reader3 中的 perf-notes通用每个 Array 开销为 70 字节，由数组和 (array) 对象组成。  显式定义的数组 item 每个 32 字节。  (array) 虚拟机对象是 38 字节。  每个对象开销为 24 字节 加 每个属性 8 字节。 直接储存数据作为列表来使用是比小数组的更有性能效率。速度比较结果 Monomorphic vs">
+  
+    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-perf-notes" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      perf_notes
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/08/26/perf-notes/" class="article-date">
+  <time datetime="2018-08-26T12:35:17.000Z" itemprop="datePublished">2018-08-26</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="来源-Angular-Core-Reader3-中的-perf-notes"><a href="#来源-Angular-Core-Reader3-中的-perf-notes" class="headerlink" title="来源 Angular Core Reader3 中的 perf-notes"></a>来源 Angular Core Reader3 中的 <a href="https://github.com/angular/angular/blob/master/packages/core/src/render3/PERF_NOTES.md" target="_blank" rel="noopener">perf-notes</a></h1><h2 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h2><p>每个 Array 开销为 70 字节，由数组和 (array) 对象组成。</p>
+<ul>
+<li>显式定义的数组 item 每个 32 字节。 </li>
+<li>(array) 虚拟机对象是 38 字节。</li>
+</ul>
+<p>每个对象开销为 24 字节 加 每个属性 8 字节。</p>
+<p>直接储存数据作为列表来使用是比小数组的更有性能效率。<br><a href="https://jsperf.com/small-arrays-vs-linked-objects" target="_blank" rel="noopener">速度比较结果</a></p>
+<h2 id="Monomorphic-vs-Megamorphic-code"><a href="#Monomorphic-vs-Megamorphic-code" class="headerlink" title="Monomorphic vs Megamorphic code"></a>Monomorphic vs Megamorphic code</h2><p>Great reads:</p>
+<ul>
+<li><a href="http://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html" target="_blank" rel="noopener">What’s up with monomorphism?</a></li>
+<li><a href="http://benediktmeurer.de/2018/03/23/impact-of-polymorphism-on-component-based-frameworks-like-react/" target="_blank" rel="noopener">Impact of polymorphism on component-based frameworks like React</a></li>
+</ul>
+<p>1) Monomorphic prop access is 100 times faster than megamorphic.<br>2) Monomorphic call is 4 times faster the megamorphic call.</p>
+<p> See benchmark <a href="https://jsperf.com/mono-vs-megamorphic-property-access" target="_blank" rel="noopener">here</a>.</p>
+<p>总结 静态定义比灵活定义的性能好，有几倍的差距。</p>
+<h2 id="Exporting-top-level-variables"><a href="#Exporting-top-level-variables" class="headerlink" title="Exporting top level variables"></a>Exporting top level variables</h2><p>在可能的情况下，应尽可能避免导出顶级变量<br>和代码大小很重要：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Typescript</span><br><span class="line">export let exported = 0;</span><br><span class="line">let notExported = 0;</span><br><span class="line"></span><br><span class="line">notExported = exported;</span><br><span class="line"></span><br><span class="line">// Would be compiled to</span><br><span class="line">exports.exported = 0;</span><br><span class="line">var notExported = 0;</span><br><span class="line"></span><br><span class="line">notExported = exports.exported;</span><br></pre></td></tr></table></figure>
+<p>大多数压缩工具都不会重命名属性（除了闭包内的）<br>所以可以这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let exported = 0;</span><br><span class="line"></span><br><span class="line">export function getExported() &#123; return exported; &#125;</span><br><span class="line">export function setExported(v) &#123; exported = v; &#125;</span><br></pre></td></tr></table></figure>
+<p>Also writing to a property of <code>exports</code> might change its hidden class resulting in megamorphic access.</p>
+<p>另外，  <code>exports</code> 的属性写入（不易察觉）导致了 megamorphic 的访问，速度下降。</p>
+<h2 id="Iterating-over-Keys-of-an-Object"><a href="#Iterating-over-Keys-of-an-Object" class="headerlink" title="Iterating over Keys of an Object."></a>Iterating over Keys of an Object.</h2><p><a href="https://jsperf.com/object-keys-vs-for-in-with-closure/3" target="_blank" rel="noopener">https://jsperf.com/object-keys-vs-for-in-with-closure/3</a> 明确指出 <code>Object.keys</code> 是最快遍历对象的方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (var i = 0, keys = Object.keys(obj); i &lt; keys.length; i++) &#123;</span><br><span class="line">  const key = keys[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Recursive-functions"><a href="#Recursive-functions" class="headerlink" title="Recursive functions"></a>Recursive functions</h2><p>尽可能避免使用递归函数，因为它们无法内联。</p>
+<p>总结 递归性能会下降。</p>
+<h2 id="Loops"><a href="#Loops" class="headerlink" title="Loops"></a>Loops</h2><p>Don’t use foreach, it can cause megamorphic function calls (depending on the browser) and function allocations.<br>不要使用foreach，它可能会调用 megamorphic 函数（取决于浏览器）和 函数分配。</p>
+<p>总结 foreach 比 for 慢。</p>
+<p>It is <a href="https://jsperf.com/for-vs-foreach-misko" target="_blank" rel="noopener">a lot slower than regular <code>for</code> loops</a></p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/06/24/Redux-vs-MobX/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Redux vs MobX</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
+  		
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 chegde 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
