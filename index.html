@@ -15,25 +15,269 @@
 <meta name="twitter:title" content="chegde 杂货店">
 <meta name="twitter:description" content="看看有趣的东西">
   
-    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
   
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
   <link rel="stylesheet" href="/css/style.css">
   
 
 </head>
+
 <body>
   <div id="container">
     <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chegde 杂货店</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://chegde.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
       <div class="outer">
         <section id="main">
   
-    <article id="post-perf-notes" class="article article-type-post" itemscope itemprop="blogPost">
-  
+    <article id="post-socket" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/02/socket/" class="article-date">
+  <time datetime="2018-09-02T13:47:12.000Z" itemprop="datePublished">2018-09-02</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/02/socket/">socket</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>sockets 可以说是 standard Unix file descriptors。<br>read() write() 也可以，但是send() and recv() 会有更好的控制。A file descriptor is simply an integer associated with an open file. But (and here’s the catch), that file can be a network connection, a FIFO, a pipe, a terminal, a real on-the-disk file, or just about anything else. Everything in Unix is a file!</p>
+<h3 id="两种-Internet-Sockets"><a href="#两种-Internet-Sockets" class="headerlink" title="两种 Internet Sockets"></a>两种 Internet Sockets</h3><p>Stream sockets 就是用的 TCP （the transimission control protocol）。IP 代表的是 Internet Protocol。<br>Datagram sockets 用 UDP （User Datagram protocol）。 tftp (trivial file transfer protocol, a little brother to FTP), dhcpcd (a DHCP client), multiplayer games, streaming audio, video conferencing, etc. </p>
+<h3 id="IP-Addresses"><a href="#IP-Addresses" class="headerlink" title="IP Addresses"></a>IP Addresses</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">sa</span>;</span> <span class="comment">// IPv4</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in6</span> <span class="title">sa6</span>;</span> <span class="comment">// IPv6</span></span><br><span class="line">inet_pton(AF_INET, <span class="string">"10.12.110.57"</span>, &amp;(sa.sin_addr)); <span class="comment">// IPv4</span></span><br><span class="line">inet_pton(AF_INET6, <span class="string">"2001:db8:63b3:1::3490"</span>, &amp;(sa6.sin6_addr)); <span class="comment">// IPv6</span></span><br></pre></td></tr></table></figure>
+<p>该函数将IP地址转换为 sockaddr_in 结构。<br>“pton” stands for “presentation to network”—you can call it “printable to network” if that’s easier to remember.<br>以前这个功能的函数叫 inet_addr 或者是 inet_aton, 但是用不了 ipv6 了。</p>
+<p>inet_ntop()  “ntop” means “network to presentation”<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ip4[INET_ADDRSTRLEN]; <span class="comment">// space to hold the IPv4 string</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">sa</span>;</span> <span class="comment">// pretend this is loaded with something</span></span><br><span class="line">inet_ntop(AF_INET, &amp;(sa.sin_addr), ip4, INET_ADDRSTRLEN);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"The IPv4 address is: %s\n"</span>, ip4);</span><br></pre></td></tr></table></figure></p>
+<p>getaddrinfo() 可以得到IP地址。</p>
+<h3 id="socket"><a href="#socket" class="headerlink" title="socket()"></a>socket()</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数可以硬编码，(domain is PF_INET or PF_INET6, type is SOCK_STREAM or SOCK_DGRAM, and protocol can be set to 0 to choose the proper protocol for the given type<br>也可以用getprotobyname() 传”TCP” “UDP”</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> s;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>, *<span class="title">res</span>;</span></span><br><span class="line"><span class="comment">// do the lookup</span></span><br><span class="line"><span class="comment">// [pretend we already filled out the "hints" struct]</span></span><br><span class="line">getaddrinfo(<span class="string">"www.example.com"</span>, <span class="string">"http"</span>, &amp;hints, &amp;res);</span><br><span class="line"><span class="comment">// [again, you should do error-checking on getaddrinfo(), and walk</span></span><br><span class="line"><span class="comment">// the "res" linked list looking for valid entries instead of just</span></span><br><span class="line"><span class="comment">// assuming the first one is good (like many of these examples do.)</span></span><br><span class="line"><span class="comment">// See the section on client/server for real examples.]</span></span><br><span class="line">s = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);</span><br></pre></td></tr></table></figure>
+<p>socket 调用成功则返回 a socket descriptor， 失败返回-1。<br>全局变量 errno 将会被设置。</p>
+<p>一旦你有了 socket，你应该将它跟本地机器的端口绑定。<br>服务端就需要 listen(), 客户端需要 connect()。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *my_addr, <span class="keyword">int</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>sockfd 就是 a socket descriptor, my_addr 需要指向 struct sockaddr，addrlen 是地址的字节数的长度</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>, *<span class="title">res</span>;</span></span><br><span class="line"><span class="keyword">int</span> sockfd;</span><br><span class="line"><span class="comment">// first, load up address structs with getaddrinfo():</span></span><br><span class="line"><span class="built_in">memset</span>(&amp;hints, <span class="number">0</span>, <span class="keyword">sizeof</span> hints);</span><br><span class="line">hints.ai_family = AF_UNSPEC; <span class="comment">// use IPv4 or IPv6, whichever</span></span><br><span class="line">hints.ai_socktype = SOCK_STREAM;</span><br><span class="line">hints.ai_flags = AI_PASSIVE; <span class="comment">// fill in my IP for me</span></span><br><span class="line">getaddrinfo(<span class="literal">NULL</span>, <span class="string">"3490"</span>, &amp;hints, &amp;res);</span><br><span class="line"><span class="comment">// make a socket:</span></span><br><span class="line">sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);</span><br><span class="line"><span class="comment">// bind it to the port we passed in to getaddrinfo():</span></span><br><span class="line">bind(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);</span><br></pre></td></tr></table></figure>
+<p>如果已经被绑定了<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lose the pesky "Address already in use" error message</span></span><br><span class="line"><span class="keyword">if</span> (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&amp;yes,<span class="keyword">sizeof</span> yes) == <span class="number">-1</span>) &#123;</span><br><span class="line">perror(<span class="string">"setsockopt"</span>);</span><br><span class="line"><span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实客户端连接不用关心 bind(), 你调用 connect() 它会检查 socket 是否 unbound, 需要的话 它会自行绑定到本地未使用的端口。</p>
+<h3 id="Connect"><a href="#Connect" class="headerlink" title="Connect"></a>Connect</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *serv_addr, <span class="keyword">int</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>sockfd is our friendly neighborhood socket file descriptor, as returned by the socket() call, serv_addr is a struct sockaddr containing the destination port and IP address, and addrlen is the length in bytes of the server address structure.</p>
+<p>建立一个socket 连接：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>, *<span class="title">res</span>;</span></span><br><span class="line"><span class="keyword">int</span> sockfd;</span><br><span class="line"><span class="comment">// first, load up address structs with getaddrinfo():</span></span><br><span class="line"><span class="built_in">memset</span>(&amp;hints, <span class="number">0</span>, <span class="keyword">sizeof</span> hints);</span><br><span class="line">hints.ai_family = AF_UNSPEC;</span><br><span class="line">hints.ai_socktype = SOCK_STREAM;</span><br><span class="line">getaddrinfo(<span class="string">"www.example.com"</span>, <span class="string">"3490"</span>, &amp;hints, &amp;res);</span><br><span class="line"><span class="comment">// make a socket:</span></span><br><span class="line">sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);</span><br><span class="line"></span><br><span class="line"><span class="comment">// connect!</span></span><br><span class="line">connect(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);</span><br></pre></td></tr></table></figure></p>
+<p>旧的写法会填充 sockaddr_ins.<br>确保 connect 返回的值不等于-1, 不然要去检查一下 errno. 别担心端口, 无需 bind, 内核会做这些事.</p>
+<h3 id="listen"><a href="#listen" class="headerlink" title="listen()"></a>listen()</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>sockfd 就是 socket file descriptor. backlog 是所能允许的连接数. 进入的连接在等待, 大多数系统默认限制为20, 你可以设置它.<br>跟以往一样, 当listen() 返回 -1 时, 需要检查 errno.<br>显然, 在调用 listen() 时, 先需要 bind(). </p>
+<p>所以, 调用的顺序基本上是<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">getaddrinfo();</span><br><span class="line">socket();</span><br><span class="line">bind();</span><br><span class="line">listen();</span><br><span class="line"><span class="comment">/* accept() goes here */</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="accept"><a href="#accept" class="headerlink" title="accept()"></a>accept()</h3><p>连接都在等待被 Accept(). 你调用 accept(), 然后等待准备的连接, 它将放回全新的一个 socket file descriptor. 原来的 socket 仍然在等待新的连接, 全新的 socket 可以使用 send() 和 recv().</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *addr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>错误处理一如既往. addr 指向本地的 struct sockaddr_storage. addrlen 应该是 sizeof(struct sockaddr_storage).</p>
+<p>至此, 总结一下上面的吧：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MYPORT <span class="meta-string">"3490"</span>  <span class="comment">// the port users will be connecting to</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BACKLOG 10     <span class="comment">// how many pending connections queue will hold</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_storage</span> <span class="title">their_addr</span>;</span></span><br><span class="line">    <span class="keyword">socklen_t</span> addr_size;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>, *<span class="title">res</span>;</span></span><br><span class="line">    <span class="keyword">int</span> sockfd, new_fd;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// !! don't forget your error checking for these calls !!</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// first, load up address structs with getaddrinfo():</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;hints, <span class="number">0</span>, <span class="keyword">sizeof</span> hints);</span><br><span class="line">    hints.ai_family = AF_UNSPEC;  <span class="comment">// use IPv4 or IPv6, whichever</span></span><br><span class="line">    hints.ai_socktype = SOCK_STREAM;</span><br><span class="line">    hints.ai_flags = AI_PASSIVE;     <span class="comment">// fill in my IP for me</span></span><br><span class="line"></span><br><span class="line">    getaddrinfo(<span class="literal">NULL</span>, MYPORT, &amp;hints, &amp;res);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make a socket, bind it, and listen on it:</span></span><br><span class="line"></span><br><span class="line">    sockfd = socket(res-&gt;ai_family, res-&gt;ai_socktype, res-&gt;ai_protocol);</span><br><span class="line">    bind(sockfd, res-&gt;ai_addr, res-&gt;ai_addrlen);</span><br><span class="line">    listen(sockfd, BACKLOG);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// now accept an incoming connection:</span></span><br><span class="line"></span><br><span class="line">    addr_size = <span class="keyword">sizeof</span> their_addr;</span><br><span class="line">    new_fd = accept(sockfd, (struct sockaddr *)&amp;their_addr, &amp;addr_size);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ready to communicate on socket descriptor new_fd!</span></span><br><span class="line">    .</span><br><span class="line">    .</span><br></pre></td></tr></table></figure></p>
+<p>new_fd 是新的, 如果你不想要再接受新的连接, 直接调用 close() 也行.</p>
+<h3 id="send-and-recv"><a href="#send-and-recv" class="headerlink" title="send() and recv()"></a>send() and recv()</h3><p>TCP 用这两个.<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">send</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *msg, <span class="keyword">int</span> len, <span class="keyword">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>样例如:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *msg = <span class="string">"Beej was here!"</span>;</span><br><span class="line"><span class="keyword">int</span> len, bytes_sent;</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">len = <span class="built_in">strlen</span>(msg);</span><br><span class="line">bytes_sent = send(sockfd, msg, len, <span class="number">0</span>);</span><br><span class="line">.</span><br><span class="line">.</span><br></pre></td></tr></table></figure></p>
+<p>send() 会返回实际上发送出去的数据大小. 如果一次性发送过大的数据量, 剩余的你要处理并继续发送. 如果整个数据包小于1KB, 可讷讷个不用担心这个问题.<br>错误处理-1.</p>
+<p>recv() 有很多相似的地方.<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recv</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">int</span> len, <span class="keyword">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>recv() 返回真实收到的字节数大小. 错误处理-1, 如果返回0, 说明对面关闭连接了.</p>
+<h3 id="sendto-和-recvfrom-–-datagram-style"><a href="#sendto-和-recvfrom-–-datagram-style" class="headerlink" title="sendto() 和 recvfrom() – datagram style"></a>sendto() 和 recvfrom() – datagram style</h3><p>datagram socket 不需要连接远程主机。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sendto</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *msg, <span class="keyword">int</span> len, <span class="keyword">unsigned</span> <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="keyword">const</span> struct sockaddr *to, <span class="keyword">socklen_t</span> tolen)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>跟 send() 相比, 这个函数就多两个参数。 sockaddr 包含了远程主机的地址和端口, tolen 其实就是 sockaddr 的长度.</p>
+<p>sendto() 返回参数的意义和 send() 一样.</p>
+<p>你可以用 getaddrinfo(), recvfrom(), 或者 你手工填充 *to 的数据.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recvfrom</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">void</span> *buf, <span class="keyword">int</span> len, <span class="keyword">unsigned</span> <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">struct sockaddr *from, <span class="keyword">int</span> *fromlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>多两个额外字段, 可见 sendto(). 返回结果如 recv 一致.</p>
+<p>struct sockaddr_storage 可以让我们不要局限于 struct sockaddr_in 中. 通用结构 sockaddr_storage 足够容纳这两者. ( 为什么不能直接用 struct sockaddr 还要用 struct sockaddr_storage 去转成 struct sockaddr？ 看起来很冗余. 就是因为 stcuct sockaddr 不能容纳, 所以他们做了一个新的.)</p>
+<h3 id="close-and-shutdown"><a href="#close-and-shutdown" class="headerlink" title="close() and shutdown()"></a>close() and shutdown()</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">close(sockfd);</span><br></pre></td></tr></table></figure>
+<p>它会阻止所有的读写在这个 socket file descriptor. 强行读写, 将发生错误.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> how)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数拥有更细颗粒的控制度.</p>
+<ul>
+<li>0 Further receives are disallowed</li>
+<li>1 Further sends are disallowed</li>
+<li>2 Further sends and receives are disallowed (like close())</li>
+</ul>
+<p>成功 返回 0 失败 返回 -1.</p>
+<p>shutdown() 不能真正关闭 socket file desciptor, 只是改变了可用度. 为了释放它, 你需要使用 close(). (如果是 windows 平台, 那就使用 closesocket(). )</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/09/02/socket/" data-id="cjltlzcpk0007m480s2bqkepd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-TypeScript-and-Babel-7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/01/TypeScript-and-Babel-7/" class="article-date">
+  <time datetime="2018-08-31T17:06:39.000Z" itemprop="datePublished">2018-09-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/01/TypeScript-and-Babel-7/">TypeScript and Babel 7</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://blogs.msdn.microsoft.com/typescript/2018/08/27/typescript-and-babel-7/?utm_source=ESnextNews.com&amp;utm_medium=Weekly+Newsletter&amp;utm_campaign=2018-08-28" target="_blank" rel="noopener">来源</a></p>
+<p>过去的一年里，Babel 用户设置 TypeScript 太困难了。</p>
+<p>虽然 TypeScript 能编译成浏览器兼容还能使用最新特性，但是如果能不切换Babel的话也能获得静态检查的优点就更好了。</p>
+<p>现在 Babel 7 提供了这项支持。</p>
+<h2 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/preset-typescript</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/preset-typescript @babel/preset-env @babel/plugin-proposal-class-properties @babel/plugin-proposal-object-rest-spread</span><br></pre></td></tr></table></figure>
+<p>.babelrc 确保是对的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;presets&quot;: [</span><br><span class="line">        &quot;@babel/env&quot;,</span><br><span class="line">        &quot;@babel/preset-typescript&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;plugins&quot;: [</span><br><span class="line">        &quot;@babel/proposal-class-properties&quot;,</span><br><span class="line">        &quot;@babel/proposal-object-rest-spread&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果用 @babel/cli 这样就完事了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">babel ./src --out-dir lib --extensions &quot;.ts,.tsx&quot;</span><br></pre></td></tr></table></figure></p>
+<p>别忘记 tsconfig.json</p>
+<h3 id="这意味什么"><a href="#这意味什么" class="headerlink" title="这意味什么"></a>这意味什么</h3><p>虽然 Bebal 能擦除类型、重写功能使其在旧浏览器运行，但是没有静态检查。就算构建成功了，也容易抛出错误。tsc 工具能提供捕获类型错误的好处。</p>
+<p>如果你已经在用 TypeScript ,这确实没什么大不了的。如果你在用 Babel，这能为你提供 TypeScript 的好处。</p>
+<h3 id="Caveats"><a href="#Caveats" class="headerlink" title="Caveats"></a>Caveats</h3><p>忽略</p>
+<h2 id="Next？"><a href="#Next？" class="headerlink" title="Next？"></a>Next？</h2><p>致谢… 提升了解析器的速度…<br>广纳意见。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/" data-id="cjltlzcpg0004m4805o2g74sx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-JavaScript-engine-fundamentals-optimizing-prototypes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" class="article-date">
+  <time datetime="2018-08-29T03:36:24.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/">JavaScript engine fundamentals: optimizing prototypes</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://mathiasbynens.be/notes/prototypes" target="_blank" rel="noopener">来源</a>.</p>
+<p>Based on that AST, the interpreter can start to do its thing and produce bytecode.</p>
+<p>为了更快，将把字节码发送至优化编译器。基于 profilling data 产生高度优化的机器代码。如果某时刻发生错误，优化编译器将中断返回给解释器。</p>
+<h3 id="JavaScript引擎中的解释器-编译器管道"><a href="#JavaScript引擎中的解释器-编译器管道" class="headerlink" title="JavaScript引擎中的解释器/编译器管道"></a>JavaScript引擎中的解释器/编译器管道</h3><p>interpreter-&gt;bytecode-&gt;optimizing compiler(with profilling data)-&gt;optimized code</p>
+<h5 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h5><p>V8 引擎基本一致。V8的解释器叫 Ignition ，负责生产和执行字节码。当它执行字节码的时候会在收集能在之后提升性能的 profilling data。当函数使用频繁，生产的字节码和 profilling data 会传入 TurboFan ，去生产高度优化的机器码。</p>
+<h5 id="Firefox"><a href="#Firefox" class="headerlink" title="Firefox"></a>Firefox</h5><p>interpreter-&gt;bytecode<br>Baseline-&gt;somewhat optimized code<br>lonMonkey-&gt;optimized code</p>
+<p>SpiderMonkey 引擎以及 <a href="https://mathiasbynens.be/notes/shapes-ics" target="_blank" rel="noopener">SpiderNode</a>，他们有两个优化编译器。Baseline compiler 生成一些优化代码，运行的时候获取 profilling data ，LonMonkey 生成高度优化代码。如果 the speculative optimization 失败，则回到 Baseline code 中。</p>
+<h5 id="Edge"><a href="#Edge" class="headerlink" title="Edge"></a>Edge</h5><p>interpreter-&gt;bytecode<br>SimpleJIT-&gt;somewhat optimized code<br>FullJIT-&gt;optimized code</p>
+<p>微软 Edge 用的是 Chakra 以及 <a href="https://github.com/nodejs/node-chakracore" target="_blank" rel="noopener">node-chakracore</a>，跟两个优化编译器的步骤相似。解释器后进入 SimpleJIT 最后进入 FullJIT。</p>
+<h6 id="Safari"><a href="#Safari" class="headerlink" title="Safari"></a>Safari</h6><p>LLInt-&gt;bytecode<br>Baseline-&gt;somewhat optimized code<br>DFG(Data Flow Graph)-&gt;mostly optimized code<br>FTL(Faster Then Light)-&gt;optimized code</p>
+<p>Apple Safari 用的是 JavaScriptCore ，用了三个不同的优化编译器。LLInt, the Low-Level Interpreter-&gt;the DFG (Data Flow Graph) compiler-&gt;the FTL (Faster Than Light) compiler。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>为什么各个引擎优化编译器不同？这是权衡。选择快速生成的低效的字节码还是花更多的时间运行高效的机器码，这是一个问题。有些引擎增加复杂度有更细颗粒度的去掌控这个问题。他们都有共同的结构：一个解析器、解释器/编译器管道。</p>
+<h3 id="JavaScript-对象模型"><a href="#JavaScript-对象模型" class="headerlink" title="JavaScript 对象模型"></a>JavaScript 对象模型</h3><p><a href="https://tc39.github.io/ecma262/#sec-property-attributes" target="_blank" rel="noopener">规范</a></p>
+<p>Object.getOwnPropertyDescriptor 获取对象描述符属性。Arrays are limited to 2³²−1 items in JavaScript。</p>
+<h5 id="Shapes"><a href="#Shapes" class="headerlink" title="Shapes"></a>Shapes</h5><p>With that in mind, JavaScript engines can optimize object property access based on the object’s shape.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123; <span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> object2 = &#123; <span class="attr">x</span>: <span class="number">3</span>, <span class="attr">y</span>: <span class="number">4</span> &#125;;</span><br><span class="line"><span class="comment">// `object1` and `object2` have the same shape.</span></span><br></pre></td></tr></table></figure></p>
+<p>为了节省内存，一份对象由 Shape 和 JSObject 组成。 Shape 由对象属性名及偏移量组成。JSObject 持有对象属性值。当有很多 Shape 一致的对象，JSObject 对应同一份 Shape。这样的好处很明显，不管有多少份对象，只要他们的 Shape 一样，那么我们只需要储存 Shape 一次。</p>
+<p>在不同引擎里的叫法</p>
+<ul>
+<li>Academic papers call them Hidden Classes (confusing w.r.t. JavaScript classes)</li>
+<li>V8 calls them Maps (confusing w.r.t. JavaScript Maps)</li>
+<li>Chakra calls them Types (confusing w.r.t. JavaScript’s dynamic types and typeof)</li>
+<li>JavaScriptCore calls them Structures</li>
+<li>SpiderMonkey calls them Shapes</li>
+</ul>
+<h4 id="Transition-chains-and-trees"><a href="#Transition-chains-and-trees" class="headerlink" title="Transition chains and trees"></a>Transition chains and trees</h4><p>Shape 继承空的 Shape ，当你不停在同父 Shape 进行修改时，Shape 的变化是 transition chain，但有分叉情况出现时，Shape 的变化是 transition tree。</p>
+<p>This optimization shortens the transition chains and makes it more efficient to construct objects from literals.<br>尽可能缩短 transition chains。为了加快搜索属性， JavaScript 引擎添加了一个 ShapeTable 数据结构。此 ShapeTable 是一个字典，将属性键映射到引入给定属性的相应形状。<br>如果都启用字典查询了，我还担心什么？ Shape 启用了 Inline Caches。</p>
+<h3 id="Inline-Caches-ICs"><a href="#Inline-Caches-ICs" class="headerlink" title="Inline Caches (ICs)"></a>Inline Caches (ICs)</h3><p>Shape 也借鉴了 ICs 的想法。它减少了很多昂贵开销的查找，使得寻找对象属性更快。<br>本质上就是 IC 会储存一次查找的值和偏移，如果下一次是同样的 Shape ，可以命中缓存，只需加载记忆偏移量的值则返回结果。</p>
+<h4 id="Storing-arrays-efficiently"><a href="#Storing-arrays-efficiently" class="headerlink" title="Storing arrays efficiently"></a>Storing arrays efficiently</h4><p>数组里的索引，索引里储存的值都是可写可遍历的，所以不会有多份属性描述符。<br>如果你用 Object.defineProperty 定义数组的某值且改变属性描述符，将会把数组进入低效模式。</p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>始终以相同的方式初始化对象，以确保它们不会走向不同的 shape 方向。</li>
+<li>不要混淆数组元素的属性特性（property attributes），以确保可以高效地存储和操作它们。</li>
+</ul>
+<h4 id="优化层级与执行效率的取舍"><a href="#优化层级与执行效率的取舍" class="headerlink" title="优化层级与执行效率的取舍"></a>优化层级与执行效率的取舍</h4><p>基于成本的考虑（内存与时间）， Hot 的代码会进入优化编译器。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjltlzcp50000m480fkppx8u8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-perf-notes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/26/perf-notes/" class="article-date">
+  <time datetime="2018-08-26T12:35:17.000Z" itemprop="datePublished">2018-08-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -45,12 +289,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/08/26/perf-notes/" class="article-date">
-  <time datetime="2018-08-26T12:35:17.000Z" itemprop="datePublished">2018-08-26</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="来源-Angular-Core-Reader3-中的-perf-notes"><a href="#来源-Angular-Core-Reader3-中的-perf-notes" class="headerlink" title="来源 Angular Core Reader3 中的 perf-notes"></a>来源 Angular Core Reader3 中的 <a href="https://github.com/angular/angular/blob/master/packages/core/src/render3/PERF_NOTES.md" target="_blank" rel="noopener">perf-notes</a></h1><h2 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h2><p>每个 Array 开销为 70 字节，由数组和 (array) 对象组成。</p>
@@ -83,20 +321,27 @@
 <p>It is <a href="https://jsperf.com/for-vs-foreach-misko" target="_blank" rel="noopener">a lot slower than regular <code>for</code> loops</a></p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjltlzcpz000em480kcqo5z5r" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-Redux-vs-MobX" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/06/24/Redux-vs-MobX/" class="article-date">
+  <time datetime="2018-06-24T03:43:38.000Z" itemprop="datePublished">2018-06-24</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -108,12 +353,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/06/24/Redux-vs-MobX/" class="article-date">
-  <time datetime="2018-06-24T03:43:38.000Z" itemprop="datePublished">2018-06-24</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="两者都可以跟React使用。选择他们各自的好处是什么？"><a href="#两者都可以跟React使用。选择他们各自的好处是什么？" class="headerlink" title="两者都可以跟React使用。选择他们各自的好处是什么？"></a>两者都可以跟React使用。选择他们各自的好处是什么？</h1><h2 id="单储存-vs-多储存"><a href="#单储存-vs-多储存" class="headerlink" title="单储存 vs 多储存"></a>单储存 vs 多储存</h2><p>你的数据存在store中。<br>Redux用一个超大store保存状态(Redux 也可以使用多store)，MobX用了多个store，所以MobX你可以分离你的store。<br>Redux的数据更规范。MobX可以有不规范的数据。</p>
@@ -125,20 +364,27 @@
 <h2 id="支持度"><a href="#支持度" class="headerlink" title="支持度"></a>支持度</h2><p>Redux 社区力量更大些。</p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/06/24/Redux-vs-MobX/" data-id="cjltlzcph0005m4807ycr8j21" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-How-to-use-IndexedDB-to-build-Progressive-Web-Apps" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" class="article-date">
+  <time datetime="2018-04-21T15:09:53.000Z" itemprop="datePublished">2018-04-21</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -150,12 +396,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" class="article-date">
-  <time datetime="2018-04-21T15:09:53.000Z" itemprop="datePublished">2018-04-21</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <p>阅读<a href="https://itnext.io/indexeddb-your-second-step-towards-progressive-web-apps-pwa-dcbcd6cc2076" target="_blank" rel="noopener">原文</a>，并写下相关要点。</p>
@@ -260,20 +500,27 @@
 </ul>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" data-id="cjltlzcpe0003m480yuui65d0" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-Understanding-TypeScript’s-type-notation" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/04/19/Understanding-TypeScript’s-type-notation/" class="article-date">
+  <time datetime="2018-04-19T15:47:55.000Z" itemprop="datePublished">2018-04-19</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -285,12 +532,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/04/19/Understanding-TypeScript’s-type-notation/" class="article-date">
-  <time datetime="2018-04-19T15:47:55.000Z" itemprop="datePublished">2018-04-19</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <p>这篇博文快速介绍 TypeScript 静态类型的标注。</p>
@@ -449,20 +690,27 @@
 <p>本文翻译自<a href="http://2ality.com/2018/04/type-notation-typescript.html?utm_source=ESnextNews.com&amp;utm_medium=Weekly+Newsletter&amp;utm_campaign=2018-04-17" target="_blank" rel="noopener">原文 - Understanding TypeScript’s type notation</a>。</p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/" data-id="cjltlzcpu000am480lv17d9zw" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-Fetch" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/04/12/Fetch/" class="article-date">
+  <time datetime="2018-04-12T03:53:03.000Z" itemprop="datePublished">2018-04-12</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -474,12 +722,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/04/12/Fetch/" class="article-date">
-  <time datetime="2018-04-12T03:53:03.000Z" itemprop="datePublished">2018-04-12</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <p>在用户交互或者最新输入的时候，你常常需要在一个 web 应用中频繁发起请求。比如说在输入文字的时候的自动完成操作或者是在地图上放大缩小的操作。让我们花一点时间去思考一下这些例子。首先是自动完成，每一次我们输入的时候（或者更少在用 <a href="https://davidwalsh.name/javascript-debounce-function" target="_blank" rel="noopener">debounce</a> 时）我们就会发出一个请求。如果用户输入改变的时候，旧的请求就会与现在无关，当我们持续打字输入的时候（比如 “java” 和 “javascript” ）。也许有很多冗余请求，在我们拿到我们需要的东西的时候。</p>
@@ -496,20 +738,27 @@
 <p>本翻译自<a href="https://www.loxodrome.io/post/cancelling-requests/" target="_blank" rel="noopener">原文 - Cancelling Requests with Abortable Fetch</a>。不定期更新<a href="http://ichengde.github.io/" target="_blank" rel="noopener">技术博文</a>欢迎<a href="https://github.com/ichengde/ichengde.github.io" target="_blank" rel="noopener">star</a>。由于本人水平有限，错误之处在所难免，敬请指正！转载请注明出处，保留原文链接以及作者信息。</p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/04/12/Fetch/" data-id="cjltlzcpc0002m4801g9pzo94" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-check-out-the-es2017-major-features" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/04/11/check-out-the-es2017-major-features/" class="article-date">
+  <time datetime="2018-04-11T09:23:10.000Z" itemprop="datePublished">2018-04-11</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -521,12 +770,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/04/11/check-out-the-es2017-major-features/" class="article-date">
-  <time datetime="2018-04-11T09:23:10.000Z" itemprop="datePublished">2018-04-11</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
@@ -582,20 +825,29 @@
 <p>本文翻译自<a href="https://www.telerik.com/blogs/ecmascript-goodies-check-out-the-es2017-major-features?utm_source=ESnextNews.com&amp;utm_medium=Weekly+Newsletter&amp;utm_campaign=2018-04-10" target="_blank" rel="noopener">原文 -ECMAScript Goodies I: Check out the ES2017 Major Features</a>。</p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/" data-id="cjltlzcps0009m4800vvdt4t3" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li></ul>
+
+    </footer>
   </div>
   
 </article>
 
 
-
   
     <article id="post-Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" class="article-date">
+  <time datetime="2016-07-14T23:32:42.000Z" itemprop="datePublished">2016-07-15</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -607,12 +859,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" class="article-date">
-  <time datetime="2016-07-14T23:32:42.000Z" itemprop="datePublished">2016-07-15</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites"><a href="#Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites" class="headerlink" title="Active learning of neuron morphology for accurate automated tracing of neurites"></a>Active learning of neuron morphology for accurate automated tracing of neurites</h1><h1 id="神经元形态主动学习-对-神经轴突的精确自动追踪"><a href="#神经元形态主动学习-对-神经轴突的精确自动追踪" class="headerlink" title="神经元形态主动学习 对 神经轴突的精确自动追踪"></a>神经元形态主动学习 对 神经轴突的精确自动追踪</h1><h5 id="阅读本文需要proxy-依赖imgur图床"><a href="#阅读本文需要proxy-依赖imgur图床" class="headerlink" title="阅读本文需要proxy,依赖imgur图床"></a>阅读本文需要proxy,依赖imgur图床</h5><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献:"></a>参考文献:</h2><p><a href="http://journal.frontiersin.org/article/10.3389/fnana.2014.00037/full" target="_blank" rel="noopener">http://journal.frontiersin.org/article/10.3389/fnana.2014.00037/full</a></p>
@@ -695,162 +941,104 @@
 <h2 id="Acknowledgments"><a href="#Acknowledgments" class="headerlink" title="Acknowledgments"></a>Acknowledgments</h2><p>致谢<br>We thank Vivek Mehta and Paarth Chothani for their significant contributions to the design and development of the NCTracer software, and Soham Mody for testing and debugging the software.<br>谢谢Vivek Mehta 和 Paarth Chothani,他们重大贡献设计和开发的软件 NCTracer ， 和 Soham Mody 为NCTracer软件测试和debugging.<br>Active training, automated tracing, and manual tracing of neurites in this study were performed with NCTracer.<br>在本研究中用NCTracer进行主动训练，自动跟踪和神经突触的手动跟踪。<br>Information on NCTracer can be found at www.neurogeometry.net.<br>NCTracer信息可以在www.neurogeometry.net发现.<br>This work was supported by the NIH grant NS063494.<br>该工作由NIH拨款NS063494支持.</p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" data-id="cjltlzcq9000im480205dcp7s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图像识别/">图像识别</a></li></ul>
+
+    </footer>
   </div>
   
 </article>
 
 
-
-  
-    <article id="[layout]-visual-studio-with-markdown" class="article article-type-[layout]" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/15/visual-studio-with-markdown/">visual studio with markdown</a>
-    </h1>
   
 
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2016/07/15/visual-studio-with-markdown/" class="article-date">
-  <time datetime="2016-07-14T16:04:11.000Z" itemprop="datePublished">2016-07-15</time>
-</a>
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ol>
-<li>在vs code中按下ctrl+shift+p,输入install extensions</li>
-<li>寻找 Markdown theme kit 安装,启动即可.</li>
-<li>可以使用vs code命令呼出markdown: open preview或使用ctrl+shift+v</li>
-</ol>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档:"></a>参考文档:</h2><p><a href="https://code.visualstudio.com/docs/languages/markdown" target="_blank" rel="noopener">https://code.visualstudio.com/docs/languages/markdown</a></p>
-<p>该参考文档主要说明了以下功能操作步骤</p>
-<ol>
-<li>markdown插件</li>
-<li>使用自己的样式</li>
-<li>增加自义定代码片段</li>
-<li>编译markdown成为html</li>
-<li>自动编译markdown</li>
-</ol>
 
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-node-recoding" class="article article-type-post" itemscope itemprop="blogPost">
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/21/node-recoding/">node-recoding</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-meta">
-      <a href="/2016/06/21/node-recoding/" class="article-date">
-  <time datetime="2016-06-21T15:34:12.000Z" itemprop="datePublished">2016-06-21</time>
-</a>
-      
-    </div>
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>node 异步特点</p>
-<h2 id="异步编程"><a href="#异步编程" class="headerlink" title="异步编程"></a>异步编程</h2><h4 id="函数式编程"><a href="#函数式编程" class="headerlink" title="函数式编程"></a>函数式编程</h4><h5 id="高阶编程"><a href="#高阶编程" class="headerlink" title="高阶编程"></a>高阶编程</h5><p>高阶函数可以将函数作为输入或返回值.<br>结合node中基本事件模块可以看出,事件的处理方式由高阶函数特性来完成的.<br>如在ECMAscript5中的数组方法 forEach map reduceRight filter every some<br>在自定义事件中,为相同事件注册不同回调,可以灵活处理业务逻辑.</p>
-<h5 id="偏函数用法"><a href="#偏函数用法" class="headerlink" title="偏函数用法"></a>偏函数用法</h5><p>创建一个调用另一个部分 参数或变量已经预置的函数 的函数的用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var isType = function(type) &#123;</span><br><span class="line">    return function(obj) &#123;</span><br><span class="line">        return toString.call(obj) == &apos;[object &apos; + type + &apos;]&apos;;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line">var isString = isType(&apos;String&apos;);</span><br><span class="line">var isFunction = isType(&apos;Function&apos;);</span><br></pre></td></tr></table></figure></p>
-<p>通过指定部分参数来产生一个新的定制参数的形式是偏函数</p>
-<h4 id="异步-Promise"><a href="#异步-Promise" class="headerlink" title="异步 Promise"></a><a href="http://www.jdon.com/idea/nodejs/promise.html" target="_blank" rel="noopener">异步 Promise</a></h4><p><a href="http://www.jdon.com/idea/nodejs/promise.html" target="_blank" rel="noopener">用法</a></p>
-<h4 id="异步-EventEmitter"><a href="#异步-EventEmitter" class="headerlink" title="异步 EventEmitter"></a><a href="http://cnodejs.org/topic/533d6edbc2621e680800e0ea" target="_blank" rel="noopener">异步 EventEmitter</a></h4><h3 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h3><p>如何进行同步</p>
-<ol>
-<li>使用回调 callback</li>
-<li>组成函数数组 递归调用</li>
-<li>调用类库<ol>
-<li><a href="https://github.com/caolan/async" target="_blank" rel="noopener">async</a></li>
-<li><a href="https://github.com/creationix/step" target="_blank" rel="noopener">step</a></li>
-</ol>
-</li>
-</ol>
-<h4 id="协程-generators"><a href="#协程-generators" class="headerlink" title="协程 generators"></a><a href="http://www.jdon.com/idea/nodejs/generators.html" target="_blank" rel="noopener">协程 generators</a></h4><ol>
-<li><a href="http://www.jdon.com/idea/nodejs/generators-vs-fibers.html" target="_blank" rel="noopener">示例 generators vs fibers</a></li>
-<li><a href="http://www.jdon.com/idea/nodejs/generators.html" target="_blank" rel="noopener">示例 generators</a></li>
-</ol>
-<p>参考链接:</p>
-<p><a href="https://howtonode.org/control-flow-part-ii" target="_blank" rel="noopener">control flow in node</a></p>
-<p><a href="http://blog.csdn.net/yanghua_kobe/article/details/8521962" target="_blank" rel="noopener">callback or promises?</a></p>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS" target="_blank" rel="noopener">cofs-http</a></p>
-<p><a href="http://code.tutsplus.com/tutorials/restful-api-design-with-nodejs-restify--cms-22637" target="_blank" rel="noopener">RESTful API Design With NodeJS &amp; Restify</a></p>
-<p><a href="https://github.com/frodefi/node-mysql-json-server" target="_blank" rel="noopener">node-mysql-json-server</a></p>
-<p><a href="https://www.owasp.org/index.php/OWASP_AJAX_Security_Guidelines#Always_return_JSON_with_an_Object_on_the_outside" target="_blank" rel="noopener">ajax security cheat sheet</a></p>
-<h4 id="angular问题解集"><a href="#angular问题解集" class="headerlink" title="angular问题解集"></a>angular问题解集</h4><p><a href="http://stackoverflow.com/questions/35534959/access-key-and-value-of-object-using-ngfor/35536052#35536052" target="_blank" rel="noopener">关于json解析成对象数组时</a></p>
-<p><a href="http://stackoverflow.com/questions/35647365/how-to-display-json-object-using-ngfor/35647396#35647396" target="_blank" rel="noopener">how to display json object using ngfor</a></p>
-<p><a href="https://angular.cn/docs/ts/latest/guide/server-communication.html#!#extract-data" target="_blank" rel="noopener">server-communication</a></p>
-<p><a href="https://fetch.spec.whatwg.org/#response-class" target="_blank" rel="noopener">fetch standard</a></p>
-<p><a href="http://reactlet.com/" target="_blank" rel="noopener">others works</a></p>
-
-      
-
-      
-        
-    </div>
-  </div>
-  
-</article>
-
-
-
-  
-  
-</section>
-        <aside id="sidebar">
-  <nav class="menus">
-  	<ul>
-  		<li><a href="/"><i class="icon icon-home"></i></a></li>
-  		
-			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
-  		
-  		
-			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
-  		
-  		
-  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
-  		
-  	</ul>
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
-  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
-</aside>
+</section>
+        
+          <aside id="sidebar">
+  
+    
 
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像识别/">图像识别</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ECMAScript/" style="font-size: 10px;">ECMAScript</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/图像识别/" style="font-size: 10px;">图像识别</a> <a href="/tags/编辑器/" style="font-size: 10px;">编辑器</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/09/02/socket/">socket</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/01/TypeScript-and-Babel-7/">TypeScript and Babel 7</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/">JavaScript engine fundamentals: optimizing prototypes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/26/perf-notes/">perf_notes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/24/Redux-vs-MobX/">Redux vs MobX</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
       </div>
       <footer id="footer">
   
-	<div id="footer-info" class="inner">
-	  &copy; 2018 chegde 
-	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
-	</div>
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 chegde<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
 </footer>
-
     </div>
     <nav id="mobile-nav">
   
@@ -858,14 +1046,10 @@
   
     <a href="/archives" class="mobile-nav-link">Archives</a>
   
-    <a href="/tags" class="mobile-nav-link">Tag</a>
-  
-    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
-  
 </nav>
     
 
-<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">

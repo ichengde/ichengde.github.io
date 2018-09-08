@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JavaScript engine fundamentals: optimizing prototypes | chegde 杂货店</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="来源. Based on that AST, the interpreter can start to do its thing and produce bytecode. 为了更快，将把字节码发送至优化编译器。基于 profilling data 产生高度优化的机器代码。如果某时刻发生错误，优化编译器将中断返回给解释器。 JavaScript引擎中的解释器/编译器管道interpreter-&amp;g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript engine fundamentals: optimizing prototypes">
+<meta property="og:url" content="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/index.html">
+<meta property="og:site_name" content="chegde 杂货店">
+<meta property="og:description" content="来源. Based on that AST, the interpreter can start to do its thing and produce bytecode. 为了更快，将把字节码发送至优化编译器。基于 profilling data 产生高度优化的机器代码。如果某时刻发生错误，优化编译器将中断返回给解释器。 JavaScript引擎中的解释器/编译器管道interpreter-&amp;g">
+<meta property="og:updated_time" content="2018-09-08T14:56:19.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript engine fundamentals: optimizing prototypes">
+<meta name="twitter:description" content="来源. Based on that AST, the interpreter can start to do its thing and produce bytecode. 为了更快，将把字节码发送至优化编译器。基于 profilling data 产生高度优化的机器代码。如果某时刻发生错误，优化编译器将中断返回给解释器。 JavaScript引擎中的解释器/编译器管道interpreter-&amp;g">
+  
+    <link rel="alternate" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chegde 杂货店</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://chegde.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JavaScript-engine-fundamentals-optimizing-prototypes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" class="article-date">
+  <time datetime="2018-08-29T03:36:24.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JavaScript engine fundamentals: optimizing prototypes
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://mathiasbynens.be/notes/prototypes" target="_blank" rel="noopener">来源</a>.</p>
+<p>Based on that AST, the interpreter can start to do its thing and produce bytecode.</p>
+<p>为了更快，将把字节码发送至优化编译器。基于 profilling data 产生高度优化的机器代码。如果某时刻发生错误，优化编译器将中断返回给解释器。</p>
+<h3 id="JavaScript引擎中的解释器-编译器管道"><a href="#JavaScript引擎中的解释器-编译器管道" class="headerlink" title="JavaScript引擎中的解释器/编译器管道"></a>JavaScript引擎中的解释器/编译器管道</h3><p>interpreter-&gt;bytecode-&gt;optimizing compiler(with profilling data)-&gt;optimized code</p>
+<h5 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h5><p>V8 引擎基本一致。V8的解释器叫 Ignition ，负责生产和执行字节码。当它执行字节码的时候会在收集能在之后提升性能的 profilling data。当函数使用频繁，生产的字节码和 profilling data 会传入 TurboFan ，去生产高度优化的机器码。</p>
+<h5 id="Firefox"><a href="#Firefox" class="headerlink" title="Firefox"></a>Firefox</h5><p>interpreter-&gt;bytecode<br>Baseline-&gt;somewhat optimized code<br>lonMonkey-&gt;optimized code</p>
+<p>SpiderMonkey 引擎以及 <a href="https://mathiasbynens.be/notes/shapes-ics" target="_blank" rel="noopener">SpiderNode</a>，他们有两个优化编译器。Baseline compiler 生成一些优化代码，运行的时候获取 profilling data ，LonMonkey 生成高度优化代码。如果 the speculative optimization 失败，则回到 Baseline code 中。</p>
+<h5 id="Edge"><a href="#Edge" class="headerlink" title="Edge"></a>Edge</h5><p>interpreter-&gt;bytecode<br>SimpleJIT-&gt;somewhat optimized code<br>FullJIT-&gt;optimized code</p>
+<p>微软 Edge 用的是 Chakra 以及 <a href="https://github.com/nodejs/node-chakracore" target="_blank" rel="noopener">node-chakracore</a>，跟两个优化编译器的步骤相似。解释器后进入 SimpleJIT 最后进入 FullJIT。</p>
+<h6 id="Safari"><a href="#Safari" class="headerlink" title="Safari"></a>Safari</h6><p>LLInt-&gt;bytecode<br>Baseline-&gt;somewhat optimized code<br>DFG(Data Flow Graph)-&gt;mostly optimized code<br>FTL(Faster Then Light)-&gt;optimized code</p>
+<p>Apple Safari 用的是 JavaScriptCore ，用了三个不同的优化编译器。LLInt, the Low-Level Interpreter-&gt;the DFG (Data Flow Graph) compiler-&gt;the FTL (Faster Than Light) compiler。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>为什么各个引擎优化编译器不同？这是权衡。选择快速生成的低效的字节码还是花更多的时间运行高效的机器码，这是一个问题。有些引擎增加复杂度有更细颗粒度的去掌控这个问题。他们都有共同的结构：一个解析器、解释器/编译器管道。</p>
+<h3 id="JavaScript-对象模型"><a href="#JavaScript-对象模型" class="headerlink" title="JavaScript 对象模型"></a>JavaScript 对象模型</h3><p><a href="https://tc39.github.io/ecma262/#sec-property-attributes" target="_blank" rel="noopener">规范</a></p>
+<p>Object.getOwnPropertyDescriptor 获取对象描述符属性。Arrays are limited to 2³²−1 items in JavaScript。</p>
+<h5 id="Shapes"><a href="#Shapes" class="headerlink" title="Shapes"></a>Shapes</h5><p>With that in mind, JavaScript engines can optimize object property access based on the object’s shape.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123; <span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span> &#125;;</span><br><span class="line"><span class="keyword">const</span> object2 = &#123; <span class="attr">x</span>: <span class="number">3</span>, <span class="attr">y</span>: <span class="number">4</span> &#125;;</span><br><span class="line"><span class="comment">// `object1` and `object2` have the same shape.</span></span><br></pre></td></tr></table></figure></p>
+<p>为了节省内存，一份对象由 Shape 和 JSObject 组成。 Shape 由对象属性名及偏移量组成。JSObject 持有对象属性值。当有很多 Shape 一致的对象，JSObject 对应同一份 Shape。这样的好处很明显，不管有多少份对象，只要他们的 Shape 一样，那么我们只需要储存 Shape 一次。</p>
+<p>在不同引擎里的叫法</p>
+<ul>
+<li>Academic papers call them Hidden Classes (confusing w.r.t. JavaScript classes)</li>
+<li>V8 calls them Maps (confusing w.r.t. JavaScript Maps)</li>
+<li>Chakra calls them Types (confusing w.r.t. JavaScript’s dynamic types and typeof)</li>
+<li>JavaScriptCore calls them Structures</li>
+<li>SpiderMonkey calls them Shapes</li>
+</ul>
+<h4 id="Transition-chains-and-trees"><a href="#Transition-chains-and-trees" class="headerlink" title="Transition chains and trees"></a>Transition chains and trees</h4><p>Shape 继承空的 Shape ，当你不停在同父 Shape 进行修改时，Shape 的变化是 transition chain，但有分叉情况出现时，Shape 的变化是 transition tree。</p>
+<p>This optimization shortens the transition chains and makes it more efficient to construct objects from literals.<br>尽可能缩短 transition chains。为了加快搜索属性， JavaScript 引擎添加了一个 ShapeTable 数据结构。此 ShapeTable 是一个字典，将属性键映射到引入给定属性的相应形状。<br>如果都启用字典查询了，我还担心什么？ Shape 启用了 Inline Caches。</p>
+<h3 id="Inline-Caches-ICs"><a href="#Inline-Caches-ICs" class="headerlink" title="Inline Caches (ICs)"></a>Inline Caches (ICs)</h3><p>Shape 也借鉴了 ICs 的想法。它减少了很多昂贵开销的查找，使得寻找对象属性更快。<br>本质上就是 IC 会储存一次查找的值和偏移，如果下一次是同样的 Shape ，可以命中缓存，只需加载记忆偏移量的值则返回结果。</p>
+<h4 id="Storing-arrays-efficiently"><a href="#Storing-arrays-efficiently" class="headerlink" title="Storing arrays efficiently"></a>Storing arrays efficiently</h4><p>数组里的索引，索引里储存的值都是可写可遍历的，所以不会有多份属性描述符。<br>如果你用 Object.defineProperty 定义数组的某值且改变属性描述符，将会把数组进入低效模式。</p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>始终以相同的方式初始化对象，以确保它们不会走向不同的 shape 方向。</li>
+<li>不要混淆数组元素的属性特性（property attributes），以确保可以高效地存储和操作它们。</li>
+</ul>
+<h4 id="优化层级与执行效率的取舍"><a href="#优化层级与执行效率的取舍" class="headerlink" title="优化层级与执行效率的取舍"></a>优化层级与执行效率的取舍</h4><p>基于成本的考虑（内存与时间）， Hot 的代码会进入优化编译器。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjltlzcp50000m480fkppx8u8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/TypeScript-and-Babel-7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          TypeScript and Babel 7
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/26/perf-notes/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">perf_notes</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像识别/">图像识别</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ECMAScript/" style="font-size: 10px;">ECMAScript</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/图像识别/" style="font-size: 10px;">图像识别</a> <a href="/tags/编辑器/" style="font-size: 10px;">编辑器</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/09/02/socket/">socket</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/01/TypeScript-and-Babel-7/">TypeScript and Babel 7</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/">JavaScript engine fundamentals: optimizing prototypes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/26/perf-notes/">perf_notes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/24/Redux-vs-MobX/">Redux vs MobX</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 chegde<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -16,23 +16,62 @@
 <meta name="twitter:title" content="perf_notes">
 <meta name="twitter:description" content="来源 Angular Core Reader3 中的 perf-notes通用每个 Array 开销为 70 字节，由数组和 (array) 对象组成。  显式定义的数组 item 每个 32 字节。  (array) 虚拟机对象是 38 字节。  每个对象开销为 24 字节 加 每个属性 8 字节。 直接储存数据作为列表来使用是比小数组的更有性能效率。速度比较结果 Monomorphic vs">
   
-    <link rel="alternative" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="chegde 杂货店" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
   
-  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
   <link rel="stylesheet" href="/css/style.css">
   
 
 </head>
+
 <body>
   <div id="container">
     <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">chegde 杂货店</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://chegde.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
       <div class="outer">
         <section id="main"><article id="post-perf-notes" class="article article-type-post" itemscope itemprop="blogPost">
-  
+  <div class="article-meta">
+    <a href="/2018/08/26/perf-notes/" class="article-date">
+  <time datetime="2018-08-26T12:35:17.000Z" itemprop="datePublished">2018-08-26</time>
+</a>
+    
+  </div>
   <div class="article-inner">
+    
     
       <header class="article-header">
         
@@ -44,12 +83,6 @@
 
       </header>
     
-    <div class="article-meta">
-      <a href="/2018/08/26/perf-notes/" class="article-date">
-  <time datetime="2018-08-26T12:35:17.000Z" itemprop="datePublished">2018-08-26</time>
-</a>
-      
-    </div>
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="来源-Angular-Core-Reader3-中的-perf-notes"><a href="#来源-Angular-Core-Reader3-中的-perf-notes" class="headerlink" title="来源 Angular Core Reader3 中的 perf-notes"></a>来源 Angular Core Reader3 中的 <a href="https://github.com/angular/angular/blob/master/packages/core/src/render3/PERF_NOTES.md" target="_blank" rel="noopener">perf-notes</a></h1><h2 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h2><p>每个 Array 开销为 70 字节，由数组和 (array) 对象组成。</p>
@@ -82,14 +115,25 @@
 <p>It is <a href="https://jsperf.com/for-vs-foreach-misko" target="_blank" rel="noopener">a lot slower than regular <code>for</code> loops</a></p>
 
       
-
-      
-        
     </div>
+    <footer class="article-footer">
+      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjltlzcpz000em480kcqo5z5r" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
   
     
 <nav id="article-nav">
+  
+    <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript engine fundamentals: optimizing prototypes
+        
+      </div>
+    </a>
   
   
     <a href="/2018/06/24/Redux-vs-MobX/" id="article-nav-older" class="article-nav-link-wrap">
@@ -102,36 +146,85 @@
   
 </article>
 
-
 </section>
-        <aside id="sidebar">
-  <nav class="menus">
-  	<ul>
-  		<li><a href="/"><i class="icon icon-home"></i></a></li>
-  		
-			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
-  		
-  		
-			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
-  		
-  		
-  			<li><a href="https://github.com/hejianxian" target="_blank"><i class="icon icon-github"></i></a></li>
-  		
-  	</ul>
-  </nav>
-  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
-</aside>
+        
+          <aside id="sidebar">
+  
+    
 
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像识别/">图像识别</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ECMAScript/" style="font-size: 10px;">ECMAScript</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/图像识别/" style="font-size: 10px;">图像识别</a> <a href="/tags/编辑器/" style="font-size: 10px;">编辑器</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/09/02/socket/">socket</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/01/TypeScript-and-Babel-7/">TypeScript and Babel 7</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/">JavaScript engine fundamentals: optimizing prototypes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/26/perf-notes/">perf_notes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/06/24/Redux-vs-MobX/">Redux vs MobX</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
       </div>
       <footer id="footer">
   
-	<div id="footer-info" class="inner">
-	  &copy; 2018 chegde 
-	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-	  - Theme <a href="https://github.com/hejianxian/hexo-theme-jane/" target="_blank">Jane</a>
-	</div>
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 chegde<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
 </footer>
-
     </div>
     <nav id="mobile-nav">
   
@@ -139,14 +232,10 @@
   
     <a href="/archives" class="mobile-nav-link">Archives</a>
   
-    <a href="/tags" class="mobile-nav-link">Tag</a>
-  
-    <a href="https://github.com/hejianxian" class="mobile-nav-link">Github</a>
-  
 </nav>
     
 
-<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
   <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
