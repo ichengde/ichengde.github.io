@@ -137,11 +137,17 @@
 </ul>
 <p>成功 返回 0 失败 返回 -1.</p>
 <p>shutdown() 不能真正关闭 socket file desciptor, 只是改变了可用度. 为了释放它, 你需要使用 close(). (如果是 windows 平台, 那就使用 closesocket(). )</p>
+<h3 id="getpeername"><a href="#getpeername" class="headerlink" title="getpeername()"></a>getpeername()</h3><p>The function getpeername() will tell you who is at the other end of a connected stream socket</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpeername</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *addr, <span class="keyword">int</span> *addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>sockfd 已经连接的sfd, addr 指向 sockaddr 的指针, addrlen -&gt; sizeof *addr.<br>inet_ntop(), getnameinfo(), or gethostbyaddr() 可以得到更多信息.<br>The function returns -1 on error and sets errno accordingly.</p>
+<h3 id="gethostname"><a href="#gethostname" class="headerlink" title="gethostname()"></a>gethostname()</h3><p>It returns the name of the computer that your program is running on</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gethostname</span><span class="params">(<span class="keyword">char</span> *hostname, <span class="keyword">size_t</span> size)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>hostname is a pointer to an array of chars that will contain the hostname upon the function’s return, and size is the length in bytes of the hostname array. The function returns 0 on successful completion, and -1 on error, setting errno as usual.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/09/02/socket/" data-id="cjltlzcpk0007m480s2bqkepd" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/09/02/socket/" data-id="cjlwgxpvi0007yv8wasisw458" class="article-share-link">Share</a>
       
       
     </footer>
@@ -190,7 +196,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/" data-id="cjltlzcpg0004m4805o2g74sx" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/" data-id="cjlwgxpve0004yv8wmjtfisv3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -259,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjltlzcp50000m480fkppx8u8" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjlwgxpv90002yv8w8b252ci9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -323,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjltlzcpz000em480kcqo5z5r" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjlwgxpvv000byv8wt1ya206h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -366,7 +372,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/06/24/Redux-vs-MobX/" data-id="cjltlzcph0005m4807ycr8j21" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/06/24/Redux-vs-MobX/" data-id="cjlwgxpvf0005yv8wvvld8evc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -502,7 +508,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" data-id="cjltlzcpe0003m480yuui65d0" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" data-id="cjlwgxpv30000yv8w6ee7r5vd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -692,7 +698,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/" data-id="cjltlzcpu000am480lv17d9zw" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/" data-id="cjlwgxpvg0006yv8w9fpb7s98" class="article-share-link">Share</a>
       
       
     </footer>
@@ -740,7 +746,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/12/Fetch/" data-id="cjltlzcpc0002m4801g9pzo94" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/12/Fetch/" data-id="cjlwgxpvc0003yv8wu3gh4gt7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -827,7 +833,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/" data-id="cjltlzcps0009m4800vvdt4t3" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/" data-id="cjlwgxpvj0008yv8w0f1eag0k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li></ul>
@@ -943,7 +949,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" data-id="cjltlzcq9000im480205dcp7s" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" data-id="cjlwgxpw9000iyv8w7tq5j13m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图像识别/">图像识别</a></li></ul>
