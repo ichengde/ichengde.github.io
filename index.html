@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://chegde.github.io"></form>
@@ -143,11 +143,15 @@
 <h3 id="gethostname"><a href="#gethostname" class="headerlink" title="gethostname()"></a>gethostname()</h3><p>It returns the name of the computer that your program is running on</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gethostname</span><span class="params">(<span class="keyword">char</span> *hostname, <span class="keyword">size_t</span> size)</span></span>;</span><br></pre></td></tr></table></figure>
 <p>hostname is a pointer to an array of chars that will contain the hostname upon the function’s return, and size is the length in bytes of the hostname array. The function returns 0 on successful completion, and -1 on error, setting errno as usual.</p>
-
+<h2 id="Client-Server-Background"><a href="#Client-Server-Background" class="headerlink" title="Client-Server Background"></a>Client-Server Background</h2><p>there will only be one server on a machine, and that server will handle multiple clients using<br>fork(). The basic routine is: server will wait for a connection, accept() it, and fork() a child process to<br>handle it. This is what our sample server does in the next section.</p>
+<p>多进程处理连接。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">** server.c -- a stream socket server demo</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PORT <span class="meta-string">"3490"</span> <span class="comment">// the port users will be connecting to</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BACKLOG 10 <span class="comment">// how many pending connections queue will hold</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigchld_handler</span><span class="params">(<span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// waitpid() might overwrite errno, so we save and restore it:</span></span><br><span class="line">  <span class="keyword">int</span> saved_errno = errno;</span><br><span class="line">  <span class="keyword">while</span> (waitpid(<span class="number">-1</span>, <span class="literal">NULL</span>, WNOHANG) &gt; <span class="number">0</span>);</span><br><span class="line">  errno = saved_errno;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// get sockaddr, IPv4 or IPv6:</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> * <span class="title">get_in_addr</span><span class="params">(struct sockaddr * sa)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (sa - &gt; sa_family == AF_INET) &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;(((struct sockaddr_in * ) sa) - &gt; sin_addr);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> &amp;(((struct sockaddr_in6 * ) sa) - &gt; sin6_addr);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> sockfd, new_fd; <span class="comment">// listen on sock_fd, new connection on new_fd</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hints</span>, * <span class="title">servinfo</span>, * <span class="title">p</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_storage</span> <span class="title">their_addr</span>;</span> <span class="comment">// connector's address information</span></span><br><span class="line">  <span class="keyword">socklen_t</span> sin_size;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">sa</span>;</span></span><br><span class="line">  <span class="keyword">int</span> yes = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">char</span> s[INET6_ADDRSTRLEN];</span><br><span class="line">  <span class="keyword">int</span> rv;</span><br><span class="line">  <span class="built_in">memset</span>( &amp; hints, <span class="number">0</span>, <span class="keyword">sizeof</span> hints);</span><br><span class="line">  hints.ai_family = AF_UNSPEC;</span><br><span class="line">  hints.ai_socktype = SOCK_STREAM;</span><br><span class="line">  hints.ai_flags = AI_PASSIVE; <span class="comment">// use my IP</span></span><br><span class="line">  <span class="keyword">if</span> ((rv = getaddrinfo(<span class="literal">NULL</span>, PORT, &amp; hints, &amp; servinfo)) != <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"getaddrinfo: %s\n"</span>, gai_strerror(rv));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// loop through all the results and bind to the first we can</span></span><br><span class="line">  <span class="keyword">for</span> (p = servinfo; p != <span class="literal">NULL</span>; p = p - &gt; ai_next) &#123;</span><br><span class="line">    <span class="keyword">if</span> ((sockfd = socket(p - &gt; ai_family, p - &gt; ai_socktype,</span><br><span class="line">        p - &gt; ai_protocol)) == <span class="number">-1</span>) &#123;</span><br><span class="line">      perror(<span class="string">"server: socket"</span>);</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp; yes,</span><br><span class="line">        <span class="keyword">sizeof</span>(<span class="keyword">int</span>)) == <span class="number">-1</span>) &#123;</span><br><span class="line">      perror(<span class="string">"setsockopt"</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (bind(sockfd, p - &gt; ai_addr, p - &gt; ai_addrlen) == <span class="number">-1</span>) &#123;</span><br><span class="line">      close(sockfd);</span><br><span class="line">      perror(<span class="string">"server: bind"</span>);</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  freeaddrinfo(servinfo); <span class="comment">// all done with this structure</span></span><br><span class="line">  <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"server: failed to bind\n"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (listen(sockfd, BACKLOG) == <span class="number">-1</span>) &#123;</span><br><span class="line">    perror(<span class="string">"listen"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  sa.sa_handler = sigchld_handler; <span class="comment">// reap all dead processes</span></span><br><span class="line">  sigemptyset( &amp; sa.sa_mask);</span><br><span class="line">  sa.sa_flags = SA_RESTART;</span><br><span class="line">  <span class="keyword">if</span> (sigaction(SIGCHLD, &amp; sa, <span class="literal">NULL</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line">    perror(<span class="string">"sigaction"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"server: waiting for connections...\n"</span>);</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123; <span class="comment">// main accept() loop</span></span><br><span class="line">    sin_size = <span class="keyword">sizeof</span> their_addr;</span><br><span class="line">    new_fd = accept(sockfd, (struct sockaddr * ) &amp; their_addr, &amp; sin_size);</span><br><span class="line">    <span class="keyword">if</span> (new_fd == <span class="number">-1</span>) &#123;</span><br><span class="line">      perror(<span class="string">"accept"</span>);</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    inet_ntop(their_addr.ss_family,</span><br><span class="line">      get_in_addr((struct sockaddr * ) &amp; their_addr),</span><br><span class="line">      s, <span class="keyword">sizeof</span> s);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"server: got connection from %s\n"</span>, s);</span><br><span class="line">    <span class="keyword">if</span> (!fork()) &#123; <span class="comment">// this is the child process</span></span><br><span class="line">      close(sockfd); <span class="comment">// child doesn't need the listener</span></span><br><span class="line">      <span class="keyword">if</span> (send(new_fd, <span class="string">"Hello, world!"</span>, <span class="number">13</span>, <span class="number">0</span>) == <span class="number">-1</span>)</span><br><span class="line">        perror(<span class="string">"send"</span>);</span><br><span class="line">      close(new_fd);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    close(new_fd); <span class="comment">// parent doesn't need this</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>sigaction() 主要负责杀死没有连接的 fork() 的僵尸进程.</p>
+<h2 id="A-Simple-Stream-Client"><a href="#A-Simple-Stream-Client" class="headerlink" title="A Simple Stream Client"></a>A Simple Stream Client</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/09/02/socket/" data-id="cjlwgxpvi0007yv8wasisw458" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/09/02/socket/" data-id="cjlxw6nr40007mh8wl9akyl2h" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -196,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/" data-id="cjlwgxpve0004yv8wmjtfisv3" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/" data-id="cjlxw6nr00004mh8wplct51wu" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -265,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjlwgxpv90002yv8w8b252ci9" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/" data-id="cjlxw6nqo0000mh8woexsur99" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -329,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjlwgxpvv000byv8wt1ya206h" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/08/26/perf-notes/" data-id="cjlxw6nrh000bmh8wwk92x550" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -372,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/06/24/Redux-vs-MobX/" data-id="cjlwgxpvf0005yv8wvvld8evc" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/06/24/Redux-vs-MobX/" data-id="cjlxw6nr10005mh8wx4eapzh5" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -508,7 +512,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" data-id="cjlwgxpv30000yv8w6ee7r5vd" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/" data-id="cjlxw6nqy0003mh8wq42e4l0b" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -698,7 +702,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/" data-id="cjlwgxpvg0006yv8w9fpb7s98" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/19/Understanding-TypeScript’s-type-notation/" data-id="cjlxw6nrk000emh8wyirpklcz" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -746,7 +750,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/12/Fetch/" data-id="cjlwgxpvc0003yv8wu3gh4gt7" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/12/Fetch/" data-id="cjlxw6nqv0002mh8wzgddvesk" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -833,7 +837,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/" data-id="cjlwgxpvj0008yv8w0f1eag0k" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/" data-id="cjlxw6nr30006mh8wpc1qc5wm" class="article-share-link">Partager</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li></ul>
@@ -949,7 +953,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://chegde.github.io/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" data-id="cjlwgxpw9000iyv8w7tq5j13m" class="article-share-link">Share</a>
+      <a data-url="http://chegde.github.io/2016/07/15/Active-learning-of-neuron-morphology-for-accurate-automated-tracing-of-neurites/" data-id="cjlxw6nru000imh8wxrsp03rx" class="article-share-link">Partager</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图像识别/">图像识别</a></li></ul>
@@ -975,7 +979,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
+    <h3 class="widget-title">Mot-clés</h3>
     <div class="widget">
       <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图像识别/">图像识别</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编辑器/">编辑器</a></li></ul>
     </div>
@@ -985,7 +989,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
+    <h3 class="widget-title">Nuage de mot-clés</h3>
     <div class="widget tagcloud">
       <a href="/tags/ECMAScript/" style="font-size: 10px;">ECMAScript</a> <a href="/tags/javascript/" style="font-size: 10px;">javascript</a> <a href="/tags/图像识别/" style="font-size: 10px;">图像识别</a> <a href="/tags/编辑器/" style="font-size: 10px;">编辑器</a>
     </div>
@@ -1004,7 +1008,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -1041,7 +1045,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 chegde<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
