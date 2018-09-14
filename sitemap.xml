@@ -2,37 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://chegde.github.io/2018/09/02/socket/</loc>
+    <loc>http://chegde.github.io/2016/07/15/visual-studio-with-markdown/</loc>
     
-    <lastmod>2018-09-14T15:06:49.508Z</lastmod>
+    <lastmod>2018-09-14T15:10:43.693Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/</loc>
+    <loc>http://chegde.github.io/2018/04/19/Understanding-TypeScript%E2%80%99s-type-notation/</loc>
     
-    <lastmod>2018-09-08T14:56:19.486Z</lastmod>
+    <lastmod>2018-09-14T15:10:27.117Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://chegde.github.io/2018/09/01/TypeScript-and-Babel-7/</loc>
     
-    <lastmod>2018-09-08T14:56:19.486Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chegde.github.io/2018/08/26/perf-notes/</loc>
-    
-    <lastmod>2018-08-26T13:18:55.360Z</lastmod>
+    <lastmod>2018-09-14T15:10:23.678Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://chegde.github.io/2018/06/24/Redux-vs-MobX/</loc>
     
-    <lastmod>2018-06-24T03:44:49.649Z</lastmod>
+    <lastmod>2018-09-14T15:10:07.291Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2018/08/26/perf-notes/</loc>
+    
+    <lastmod>2018-09-14T15:10:01.292Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2016/06/21/node-recoding/</loc>
+    
+    <lastmod>2018-09-14T15:09:43.144Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2018/08/29/JavaScript-engine-fundamentals-optimizing-prototypes/</loc>
+    
+    <lastmod>2018-09-14T15:09:39.238Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/</loc>
+    
+    <lastmod>2018-09-14T15:09:35.814Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2018/04/12/Fetch/</loc>
+    
+    <lastmod>2018-09-14T15:09:30.040Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chegde.github.io/2018/09/02/socket/</loc>
+    
+    <lastmod>2018-09-14T15:06:49.508Z</lastmod>
     
   </url>
   
@@ -44,44 +79,9 @@
   </url>
   
   <url>
-    <loc>http://chegde.github.io/2018/04/19/Understanding-TypeScript%E2%80%99s-type-notation/</loc>
-    
-    <lastmod>2018-06-09T15:31:13.726Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://chegde.github.io/2018/04/11/check-out-the-es2017-major-features/</loc>
     
     <lastmod>2018-06-09T15:26:18.014Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chegde.github.io/2018/04/21/How-to-use-IndexedDB-to-build-Progressive-Web-Apps/</loc>
-    
-    <lastmod>2018-04-26T15:53:30.666Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chegde.github.io/2018/04/12/Fetch/</loc>
-    
-    <lastmod>2018-04-19T17:21:57.460Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chegde.github.io/2016/06/21/node-recoding/</loc>
-    
-    <lastmod>2018-04-12T00:48:15.964Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chegde.github.io/2016/07/15/visual-studio-with-markdown/</loc>
-    
-    <lastmod>2018-01-05T14:27:02.000Z</lastmod>
     
   </url>
   
